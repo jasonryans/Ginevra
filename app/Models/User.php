@@ -14,13 +14,15 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
+     *~
      * @var list<string>
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -43,6 +45,44 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'boolean', // 0 = bukan admin, 1 = admin
         ];
+    }
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'role' => 'user',
+    ];
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    /**
+     * Get the user's orders.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the user's reviews.
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function reviewedProduct()
+    {
+        return $this->belongsToMany(Product::class, 'reviews')
+            ->withPivot('review', 'rating')
+            ->withTimestamps();
     }
 }
