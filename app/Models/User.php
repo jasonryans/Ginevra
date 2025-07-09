@@ -22,7 +22,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'role',
+        'is_admin',
     ];
 
     /**
@@ -45,7 +45,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => 'boolean', // 0 = bukan admin, 1 = admin
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -55,7 +55,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $attributes = [
-        'role' => 'user',
+        'is_admin' => '0',
     ];
 
     public function addresses()

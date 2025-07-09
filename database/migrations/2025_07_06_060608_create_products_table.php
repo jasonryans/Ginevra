@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description');
+            $table->json('foto_product');
             $table->decimal('price', 10, 2);
             $table->integer('stock');
             $table->timestamps();

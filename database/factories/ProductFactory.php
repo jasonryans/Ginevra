@@ -21,6 +21,7 @@ class ProductFactory extends Factory
             'category_id' => Category::factory(),
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(1),
+            'foto_product' => 'https://shopatvelvet.com/wp-content/uploads/2025/07/KANTOR22311-400x600.jpeg', // Poster asli dari TMDb
             'price' => fake()->randomFloat(2, 10, 1000),
             'stock' => fake()->numberBetween(0, 300),
         ];

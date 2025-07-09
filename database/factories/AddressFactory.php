@@ -20,7 +20,7 @@ class AddressFactory extends Factory
         return [
             'user_id' => User::factory(),
             'recipient_name' => fake()->name(),
-            'phone' => fake()->phoneNumber(),
+            'phone' => fake()->numerify('08##########'), // Indonesian phone number format
             'address' => fake()->streetAddress(),
             'city' => fake()->city(),
             'postal_code' => fake()->postcode(),
