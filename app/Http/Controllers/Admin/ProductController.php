@@ -58,7 +58,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'foto_product' => 'nullable|array',
+            'foto_product' => 'required|array',
             'foto_product.*' => 'image|mimes:jpg,jpeg,png|max:2048',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0'

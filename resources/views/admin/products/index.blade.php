@@ -57,7 +57,7 @@
                             <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{ $product->category->name }}</span>
                         @endif
                     </td>
-                    <td class="py-2 px-4 dark:text-gray-200">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                    <td class="py-2 px-4 dark:text-gray-200">IDR {{ number_format($product->price, 0, ',', '.') }}</td>
                     <td class="py-2 px-4 dark:text-gray-200">{{ $product->stock }}</td>
                     <td class="py-2 px-4 flex gap-1">
                         <a href="{{ route('admin.products.edit', $product) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">Edit</a>
