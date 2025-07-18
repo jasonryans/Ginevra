@@ -112,27 +112,15 @@
         <div class="container">
             <h2 class="section-title">Shop by Category</h2>
             <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="category-card" style="background-image: url('{{ asset('images/category-women.jpg') }}'); background-size: cover; background-position: center;">
+                @foreach($categories as $category)
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="category-card" style="background-image: url('{{ asset('images/category-' . strtolower(str_replace(' ', '-', $category->name)) . '.jpg') }}'); background-size: cover; background-position: center;">
                         <div class="category-overlay">
-                            <h3 class="category-title">Women's Fashion</h3>
+                            <h3 class="category-title">{{ $category->name }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="category-card" style="background-image: url('{{ asset('images/category-men.jpg') }}'); background-size: cover; background-position: center;">
-                        <div class="category-overlay">
-                            <h3 class="category-title">Men's Fashion</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 mb-4">
-                    <div class="category-card" style="background-image: url('{{ asset('images/category-accessories.jpg') }}'); background-size: cover; background-position: center;">
-                        <div class="category-overlay">
-                            <h3 class="category-title">Accessories</h3>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
