@@ -16,8 +16,29 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Sale</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('shop*') ? 'active' : '' }}" href="{{ url('/shop') }}">Shop</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link {{ request()->is('shop*') ? 'active' : '' }}" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: inline-flex; align-items: center;">
+                        SHOP
+                        <span class="svg-wrapper ms-1">
+                            <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                            </svg>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="shopDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'tops') }}">Top</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'bottoms') }}">Bottom</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'outerwear') }}">Outerwear</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'dresses') }}">Dress</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('collections*') ? 'active' : '' }}" href="{{ url('/collections') }}">Collections</a>
@@ -50,9 +71,14 @@
                     </li>
                 @else
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-2"></i>
                             {{ Auth::user()->name }}
+                            <span class="svg-wrapper ms-1">
+                                <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                    <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                                </svg>
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li>
@@ -87,3 +113,31 @@
         </div>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Shop Arrow
+        const shopDropdown = document.getElementById('shopDropdown');
+        const shopCaretIcon = shopDropdown.querySelector('.icon-caret');
+        
+        shopDropdown.addEventListener('show.bs.dropdown', function () {
+            shopCaretIcon.style.transform = 'rotate(180deg)';
+        });
+        
+        shopDropdown.addEventListener('hide.bs.dropdown', function () {
+            shopCaretIcon.style.transform = 'rotate(0deg)';
+        });
+        
+        // Profile Arrow
+        const profileDropdown = document.getElementById('navbarDropdown');
+        const profileCaretIcon = profileDropdown.querySelector('.icon-caret');
+        
+        profileDropdown.addEventListener('show.bs.dropdown', function () {
+            profileCaretIcon.style.transform = 'rotate(180deg)';
+        });
+        
+        profileDropdown.addEventListener('hide.bs.dropdown', function () {
+            profileCaretIcon.style.transform = 'rotate(0deg)';
+        });
+    });
+</script>

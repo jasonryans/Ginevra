@@ -563,9 +563,6 @@
                 <div class="col-md-6">
                     <p class="mb-0 small">&copy; {{ date('Y') }} Ginevra. All rights reserved.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <small class="text-muted">Made with ❤️ for fashion lovers</small>
-                </div>
             </div>
         </div>
     </footer>
