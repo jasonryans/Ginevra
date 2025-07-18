@@ -70,7 +70,7 @@
                     {{ __('Admin List') }}
                 </x-nav-link>
 
-                <x-nav-link : href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')"
+                <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')"
                     class="flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                     <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
