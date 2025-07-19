@@ -41,6 +41,9 @@
             color: var(--soft-black);
             background-color: var(--warm-white);
             font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         .font-playfair {
@@ -401,6 +404,8 @@
             background-color: var(--soft-black) !important;
             color: var(--warm-white);
             padding: 3rem 0 1rem;
+            margin-top: auto;
+
         }
         
         .footer-link {
@@ -489,6 +494,7 @@
     </main>
     
     <!-- Newsletter Section -->
+    @if(!isset($hideNewsletter) || !$hideNewsletter)
     <section class="newsletter-section">
         <div class="container">
             <div class="row justify-content-center text-center">
@@ -507,6 +513,7 @@
             </div>
         </div>
     </section>
+    @endif
     
     <!-- Footer -->
     <footer>
@@ -514,7 +521,7 @@
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <h5 class="font-playfair mb-3">Ginevra</h5>
-                    <p class="small">Discover the latest fashion trends and elevate your style with our curated collections.</p>
+                    {{-- <p class="small">Discover the latest fashion trends and elevate your style with our curated collections.</p> --}}
                     <div class="d-flex">
                         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
@@ -523,45 +530,31 @@
                     </div>
                 </div>
                 <div class="col-md-2 mb-4">
-                    <h6 class="mb-3">Shop</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">New Arrivals</a></li>
-                        <li><a href="#" class="footer-link">Women</a></li>
-                        <li><a href="#" class="footer-link">Men</a></li>
-                        <li><a href="#" class="footer-link">Sale</a></li>
+                        <li><a href="#" class="footer-link">My account</a></li>
+                        <li><a href="#" class="footer-link">Term and condition</a></li>
+                        <li><a href="#" class="footer-link">Payment confirmation</a></li>
+                        <li><a href="#" class="footer-link">Shipping information</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
-                    <h6 class="mb-3">Support</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Size Guide</a></li>
-                        <li><a href="#" class="footer-link">Shipping</a></li>
-                        <li><a href="#" class="footer-link">Returns</a></li>
-                        <li><a href="#" class="footer-link">FAQ</a></li>
+                        <li><a href="{{ url('/about') }}" class="footer-link">FAQ</a></li>
+                        <li><a href="#" class="footer-link">Return policy</a></li>
+                        <li><a href="{{ url('/contact') }}" class="footer-link">Condition of use</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
-                    <h6 class="mb-3">Company</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url('/about') }}" class="footer-link">About</a></li>
-                        <li><a href="{{ url('/contact') }}" class="footer-link">Contact</a></li>
-                        <li><a href="#" class="footer-link">Careers</a></li>
-                        <li><a href="#" class="footer-link">Press</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2 mb-4">
-                    <h6 class="mb-3">Legal</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Privacy</a></li>
-                        <li><a href="#" class="footer-link">Terms</a></li>
-                        <li><a href="#" class="footer-link">Cookies</a></li>
+                        <li><a href="#" class="footer-link">About</a></li>
+                        <li><a href="#" class="footer-link">Contact customer care</a></li>
                     </ul>
                 </div>
             </div>
             <hr class="my-4">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0 small">&copy; {{ date('Y') }} Ginevra. All rights reserved.</p>
+                    <p class="mb-0 small">&copy; {{ date('Y') }}, Ginevra Official. All rights reserved.</p>
                 </div>
             </div>
         </div>

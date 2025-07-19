@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'profile_picture', 
     ];
 
     /**
@@ -84,5 +86,19 @@ class User extends Authenticatable
         return $this->belongsToMany(Product::class, 'reviews')
             ->withPivot('review', 'rating')
             ->withTimestamps();
+    }
+
+    public function profilePictureUrl()
+    {
+        if (!$this->profile_picture) {
+            return null;
+        }
+
+        // Return the profile picture URL if it is an absolute URL
+        if (str_starts_with($this->profile_picture, 'http')) {
+            return $this->profile_picture;
+        }
+        // Otherwise, return the URL from storage
+        return Storage::url($this->profile_picture);
     }
 }
