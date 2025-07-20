@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
-    function index(Request $request)
+    public function index(Request $request)
     {
         $user = $request->user();
         $countProductsReviewed = $user->reviewedProduct()->count();
@@ -48,7 +50,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('user.profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('user.profile.index')->with('status', 'profile-updated');
     }
 
     /**
@@ -62,6 +64,9 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        // Delete user's related data if needed (reviews, etc.)
+        // $user->reviews()->delete();
+
         Auth::logout();
 
         $user->delete();
@@ -69,6 +74,20 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::to('/login')->with('status', 'Akun berhasil dihapus.');
+    }
+
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back()->with('status', 'password-updated');
     }
 }

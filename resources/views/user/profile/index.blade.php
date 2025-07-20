@@ -15,12 +15,12 @@
     </div>
 
     <!-- Success Message -->
-    @if (session('status'))
+    {{-- @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('status') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    @endif
+    @endif --}}
 
     <!-- Profile Header -->
     <div class="row">
@@ -39,7 +39,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-3 text-center mb-3 mb-md-0">
                                 <div class="profile-picture-container">
-                                    <img src="{{ auth()->user()->profile_picture ? Storage::url(auth()->user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->username) . '&size=120&background=ff6b9d&color=ffffff&bold=true' }}"
+                                    <img src="{{ auth()->user()->profile_picture ?  asset('storage/' . auth()->user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->username) . '&size=120&background=ff6b9d&color=ffffff&bold=true' }}"
                                          class="rounded-circle mb-3 profile-picture"
                                          alt="Profile Picture"
                                          onerror="this.src='images/default-avatar.svg={{ urlencode(auth()->user()->username) }}&size=120&background=ff6b9d&color=ffffff&bold=true'">

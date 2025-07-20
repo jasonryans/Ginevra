@@ -531,10 +531,9 @@
                 </div>
                 <div class="col-md-2 mb-4">
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">My account</a></li>
                         <li><a href="#" class="footer-link">Term and condition</a></li>
-                        <li><a href="#" class="footer-link">Payment confirmation</a></li>
                         <li><a href="#" class="footer-link">Shipping information</a></li>
+                        <li><a href="#" class="footer-link">Payment confirmation</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">

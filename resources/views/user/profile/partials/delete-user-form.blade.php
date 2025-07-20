@@ -12,8 +12,11 @@
     <button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-white hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
-    >Hapus Akun</button>
+        class="btn btn-outline-danger d-inline-flex align-items-center"
+    >
+        <i class="fas fa-trash me-2"></i>
+        Hapus Akun
+    </button>
 
     <!-- Modal -->
     <div
@@ -24,13 +27,14 @@
         x-show="show"
         class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
         style="display: none;"
+        x-cloak
     >
         <div x-show="show" class="fixed inset-0 transform transition-all" x-on:click="show = false">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
 
-        <div x-show="show" class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-md sm:mx-auto">
-            <form method="post" action="{{ route('user.profile.destroy') }}" class="p-6">
+        <div x-show="show" class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-md sm:mx-auto" x-on:click.stop="">
+            <form method="post" action="{{ route('user.profile.destroy') }}" class="p-6" onsubmit="return confirm('Apakah Anda benar-benar yakin ingin menghapus akun ini?');">
                 @csrf
                 @method('delete')
 
@@ -49,8 +53,9 @@
                         id="password"
                         name="password"
                         type="password"
-                        class="mt-1 block w-3/4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         placeholder="Password"
+                        required
                     />
 
                     @error('password', 'userDeletion')
@@ -59,11 +64,12 @@
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <button type="button" x-on:click="show = false" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                    <button type="button" x-on:click="show = false" class="btn btn-outline-secondary d-inline-flex align-items-center me-3">
                         Batal
                     </button>
 
-                    <button type="submit" class="ml-3 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <button type="submit" class="btn btn-outline-danger d-inline-flex align-items-center">
+                        <i class="fas fa-trash me-2"></i>
                         Hapus Akun
                     </button>
                 </div>
