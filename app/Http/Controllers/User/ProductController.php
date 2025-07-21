@@ -52,7 +52,7 @@ class ProductController extends Controller
         // Get products for this category
         $products = Product::where('category_id', $categoryModel->id)
                           ->with('category')
-                          ->paginate(12);
+                          ->get();
         
         $categories = Category::all();
         

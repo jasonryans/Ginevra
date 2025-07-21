@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(1),
             'foto_product' => json_encode($images), // Store as JSON array
-            'price' => fake()->randomFloat(2, 10, 1000),
+            'price' => fake()->randomFloat(2, 100000, 300000),
             'stock' => fake()->numberBetween(0, 300),
         ];
     }
