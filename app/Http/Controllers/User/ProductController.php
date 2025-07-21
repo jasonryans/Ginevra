@@ -27,15 +27,14 @@ class ProductController extends Controller
         return view('user.products.show', compact('product', 'relatedProducts', 'categories'));
     }
 
-     public function category($category)
+    public function category($category)
     {
         // Map URL slugs to category names from your seeder
         $categoryMap = [
             'tops' => 'Tops',
             'bottoms' => 'Bottoms', 
             'outerwear' => 'Outerwear',
-            'dresses' => 'Dresses',
-            'accessories' => 'Accessories'
+            'dress' => 'Dress',
         ];
         
         if (!isset($categoryMap[$category])) {
@@ -49,13 +48,61 @@ class ProductController extends Controller
             abort(404);
         }
         
-        // Get products for this category
+        // Get initial 12 products for this category
         $products = Product::where('category_id', $categoryModel->id)
                           ->with('category')
+                          ->take(12)
                           ->get();
         
         $categories = Category::all();
         
         return view('user.shop.category', compact('products', 'categories', 'categoryModel'));
+    }
+
+    // New method for AJAX pagination
+    public function categoryPaginate(Request $request, $category)
+    {
+        // Map URL slugs to category names
+        $categoryMap = [
+            'tops' => 'Tops',
+            'bottoms' => 'Bottoms', 
+            'outerwear' => 'Outerwear',
+            'dress' => 'Dress',
+        ];
+        
+        if (!isset($categoryMap[$category])) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+        
+        $categoryName = $categoryMap[$category];
+        $categoryModel = Category::where('name', $categoryName)->first();
+        
+        if (!$categoryModel) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+        
+        $page = $request->get('page', 1);
+        $perPage = 12;
+        $offset = ($page - 1) * $perPage;
+        
+        // Get products for this page
+        $products = Product::where('category_id', $categoryModel->id)
+                          ->with('category')
+                          ->skip($offset)
+                          ->take($perPage)
+                          ->get();
+        
+        // Check if there are more products
+        $totalProducts = Product::where('category_id', $categoryModel->id)->count();
+        $hasMore = ($offset + $perPage) < $totalProducts;
+        
+        // Return JSON response with product HTML
+        $html = view('user.shop.partials.product-grid', compact('products'))->render();
+        
+        return response()->json([
+            'html' => $html,
+            'hasMore' => $hasMore,
+            'currentPage' => $page
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\User\ProfilePictureController;
 
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/shop/category/{category}', [ProductController::class, 'category'])->name('user.shop.category');
+Route::get('/shop/category/{category}/paginate', [ProductController::class, 'categoryPaginate'])->name('user.category.paginate'); // Add this line for AJAX pagination
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('user.products.show');
 
 Route::middleware('auth')->group(function () {

@@ -27,16 +27,16 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="shopDropdown">
                         <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'tops') }}">Top</a>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'tops') }}">Tops</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'bottoms') }}">Bottom</a>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'bottoms') }}">Bottoms</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="{{ route('user.shop.category', 'outerwear') }}">Outerwear</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'dresses') }}">Dress</a>
+                            <a class="dropdown-item" href="{{ route('user.shop.category', 'dress') }}">Dress</a>
                         </li>
                     </ul>
                 </li>

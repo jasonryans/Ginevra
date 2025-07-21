@@ -12,56 +12,9 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="products-container">
             @if ($products->count() > 0)
-                @foreach ($products as $product)
-                    <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                        <div class="product-wrapper" data-product-id="{{ $product->id }}">
-                            <div class="product-card">
-                                <a href="{{ route('user.products.show', $product->id) }}" class="product-image-link">
-                                    <div class="product-image-container">
-                                        @if ($product->foto_product)
-                                            @php
-                                                $photos = json_decode($product->foto_product, true);
-                                            @endphp
-                                            @if (is_array($photos) && count($photos) > 0)
-                                                <img src="{{ Str::startsWith($photos[0], 'http') ? $photos[0] : asset('storage/' . $photos[0]) }}" 
-                                                    alt="{{ $product->name }}" class="product-image-primary">
-                                                @if (count($photos) > 1)
-                                                    <img src="{{ Str::startsWith($photos[1], 'http') ? $photos[1] : asset('storage/' . $photos[1]) }}" 
-                                                        alt="{{ $product->name }}" class="product-image-hover">
-                                                @endif
-                                            @else
-                                                <div class="no-image-placeholder">
-                                                    <span>No Image</span>
-                                                </div>
-                                            @endif
-                                        @else
-                                            <div class="no-image-placeholder">
-                                                <span>No Image</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                            </div>
-
-                            <div class="product-info">
-                                <h3 class="product-title">
-                                    <a href="{{ route('user.products.show', $product->id) }}">
-                                        {{ $product->name }}
-                                    </a>
-                                </h3>
-                                <p class="product-brand">{{ strtoupper(config('app.name', 'GINEVRA')) }}</p>
-                                <div class="product-price">
-                                    <span class="price">IDR {{ number_format($product->price, 0, ',', '.') }}</span>
-                                    @if (isset($product->sale_price) && $product->sale_price < $product->price)
-                                        <span class="original-price">IDR
-                                            {{ number_format($product->price, 0, ',', '.') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                @include('user.shop.partials.product-grid', ['products' => $products])
             @else
                 <div class="col-12">
                     <div class="alert alert-info text-center">
@@ -71,6 +24,13 @@
                     </div>
                 </div>
             @endif
+        </div>
+
+        <!-- Loading Animation -->
+        <div id="loading-animation" class="text-center my-4" style="display: none;">
+            <div class="loading-spinner">
+                <div class="custom-spinner"></div>
+            </div>
         </div>
     </div>
 
@@ -82,17 +42,17 @@
         }
 
         .product-card {
-            background: white;
-            border-radius: 2px;
+            background: transparent;
+            border-radius: 0;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: none;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 16px;
         }
 
         .product-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: none;
         }
 
         .product-image-container {
@@ -220,10 +180,64 @@
             margin-left: 8px;
         }
 
+        /* Loading Animation Styles */
+        #loading-animation {
+            padding: 60px 0;
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e5e5e5;
+            border-top: 2px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Fade in animation for new products */
+        .product-wrapper.fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stagger animation for multiple products */
+        .product-wrapper.fade-in:nth-child(1) { animation-delay: 0.1s; }
+        .product-wrapper.fade-in:nth-child(2) { animation-delay: 0.2s; }
+        .product-wrapper.fade-in:nth-child(3) { animation-delay: 0.3s; }
+        .product-wrapper.fade-in:nth-child(4) { animation-delay: 0.4s; }
+        .product-wrapper.fade-in:nth-child(5) { animation-delay: 0.5s; }
+        .product-wrapper.fade-in:nth-child(6) { animation-delay: 0.6s; }
+        .product-wrapper.fade-in:nth-child(7) { animation-delay: 0.7s; }
+        .product-wrapper.fade-in:nth-child(8) { animation-delay: 0.8s; }
+        .product-wrapper.fade-in:nth-child(9) { animation-delay: 0.9s; }
+        .product-wrapper.fade-in:nth-child(10) { animation-delay: 1.0s; }
+        .product-wrapper.fade-in:nth-child(11) { animation-delay: 1.1s; }
+        .product-wrapper.fade-in:nth-child(12) { animation-delay: 1.2s; }
+
         /* Responsive adjustments */
-         @media (max-width: 768px) {
+        @media (max-width: 768px) {
             .product-image-container {
-                height: 400px; /* Keep it proportionally tall on tablets */
+                height: 400px;
             }
 
             .product-title {
@@ -237,7 +251,7 @@
 
         @media (max-width: 576px) {
             .product-image-container {
-                height: 320px; /* Keep it proportionally tall on mobile */
+                height: 320px;
             }
         }
 
@@ -255,30 +269,118 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const productWrappers = document.querySelectorAll('.product-wrapper');
+            let currentPage = 1;
+            let loading = false;
+            let hasMore = true;
+            const categorySlug = '{{ request()->route("category") }}';
 
-            productWrappers.forEach(wrapper => {
-                const imageContainer = wrapper.querySelector('.product-image-container');
-                const productTitle = wrapper.querySelector('.product-title a');
+            // Initialize hover effects for existing products
+            initializeProductHover();
 
-                // Add hover effect to image container
-                imageContainer.addEventListener('mouseenter', function() {
-                    wrapper.classList.add('hovered');
-                });
+            // Infinite scroll functionality
+            window.addEventListener('scroll', function() {
+                if (loading || !hasMore) return;
 
-                imageContainer.addEventListener('mouseleave', function() {
-                    wrapper.classList.remove('hovered');
-                });
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
 
-                // Add hover effect to product title
-                productTitle.addEventListener('mouseenter', function() {
-                    wrapper.classList.add('hovered');
-                });
-
-                productTitle.addEventListener('mouseleave', function() {
-                    wrapper.classList.remove('hovered');
-                });
+                // Trigger loading when user is 200px from bottom
+                if (scrollTop + windowHeight >= documentHeight - 200) {
+                    loadMoreProducts();
+                }
             });
+
+            function loadMoreProducts() {
+                if (loading || !hasMore) return;
+
+                loading = true;
+                currentPage++;
+                
+                // Show loading animation
+                document.getElementById('loading-animation').style.display = 'block';
+
+                // Make AJAX request
+                fetch(`/shop/category/${categorySlug}/paginate?page=${currentPage}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.html) {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data.html;
+                        
+                        // Add fade-in animation to new products
+                        const newProducts = tempDiv.querySelectorAll('.product-wrapper');
+                        newProducts.forEach(product => {
+                            product.classList.add('fade-in');
+                        });
+                        
+                        // Append new products to container
+                        const container = document.getElementById('products-container');
+                        while (tempDiv.firstChild) {
+                            container.appendChild(tempDiv.firstChild);
+                        }
+                        
+                        // Initialize hover effects for new products
+                        initializeProductHover();
+                        
+                        // Update hasMore flag
+                        hasMore = data.hasMore;
+                        
+                        // Show end message if no more products
+                        if (!hasMore) {
+                            document.getElementById('end-of-products').style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading more products:', error);
+                    hasMore = false;
+                })
+                .finally(() => {
+                    // Hide loading animation
+                    document.getElementById('loading-animation').style.display = 'none';
+                    loading = false;
+                });
+            }
+
+            function initializeProductHover() {
+                const productWrappers = document.querySelectorAll('.product-wrapper:not(.hover-initialized)');
+
+                productWrappers.forEach(wrapper => {
+                    const imageContainer = wrapper.querySelector('.product-image-container');
+                    const productTitle = wrapper.querySelector('.product-title a');
+
+                    if (imageContainer && productTitle) {
+                        // Add hover effect to image container
+                        imageContainer.addEventListener('mouseenter', function() {
+                            wrapper.classList.add('hovered');
+                        });
+
+                        imageContainer.addEventListener('mouseleave', function() {
+                            wrapper.classList.remove('hovered');
+                        });
+
+                        // Add hover effect to product title
+                        productTitle.addEventListener('mouseenter', function() {
+                            wrapper.classList.add('hovered');
+                        });
+
+                        productTitle.addEventListener('mouseleave', function() {
+                            wrapper.classList.remove('hovered');
+                        });
+                        
+                        // Mark as initialized
+                        wrapper.classList.add('hover-initialized');
+                    }
+                });
+            }
         });
     </script>
 @endsection

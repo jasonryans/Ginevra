@@ -17,7 +17,7 @@ class CategoriesSeeder extends Seeder
             ['id' => 1, 'name' => 'Tops'],
             ['id' => 2, 'name' => 'Outerwear'],
             ['id' => 3, 'name' => 'Bottoms'],
-            ['id' => 4, 'name' => 'Dresses']
+            ['id' => 4, 'name' => 'Dress']
         ]);
     }
 }
