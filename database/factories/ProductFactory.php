@@ -17,11 +17,16 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $images = [
+            'https://shopatvelvet.com/wp-content/uploads/2025/01/KANTOR2408-960x1440.jpeg',
+            'https://shopatvelvet.com/wp-content/uploads/2025/01/KANTOR2390-960x1440.jpeg' // Example second image
+        ];
+
         return [
-            'category_id' => Category::factory(),
+            'category_id' => fake()->numberBetween(1, 4),
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(1),
-            'foto_product' => 'https://shopatvelvet.com/wp-content/uploads/2025/07/KANTOR22311-400x600.jpeg', // Poster asli dari TMDb
+            'foto_product' => json_encode($images), // Store as JSON array
             'price' => fake()->randomFloat(2, 10, 1000),
             'stock' => fake()->numberBetween(0, 300),
         ];

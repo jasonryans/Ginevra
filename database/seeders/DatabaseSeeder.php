@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('test123'), 
             'is_admin' => '1', 
         ]);
+
+        $this->call([
+            CategoriesSeeder::class, // Run categories first
+            ProductSeeder::class,
+        ]);
     }
 }

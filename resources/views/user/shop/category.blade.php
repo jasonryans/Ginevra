@@ -25,10 +25,10 @@
                                                 $photos = json_decode($product->foto_product, true);
                                             @endphp
                                             @if (is_array($photos) && count($photos) > 0)
-                                                <img src="{{ asset('storage/' . $photos[0]) }}" alt="{{ $product->name }}"
-                                                    class="product-image-primary">
+                                                <img src="{{ Str::startsWith($photos[0], 'http') ? $photos[0] : asset('storage/' . $photos[0]) }}" 
+                                                    alt="{{ $product->name }}" class="product-image-primary">
                                                 @if (count($photos) > 1)
-                                                    <img src="{{ asset('storage/' . $photos[1]) }}"
+                                                    <img src="{{ Str::startsWith($photos[1], 'http') ? $photos[1] : asset('storage/' . $photos[1]) }}" 
                                                         alt="{{ $product->name }}" class="product-image-hover">
                                                 @endif
                                             @else
@@ -71,13 +71,6 @@
                     </div>
                 </div>
             @endif
-        </div>
-
-        <!-- Pagination -->
-        <div class="row">
-            <div class="col-12">
-                {{ $products->links() }}
-            </div>
         </div>
     </div>
 
