@@ -21,5 +21,14 @@ class ProductSeeder extends Seeder
         
         // Create 5 products that are out of stock
         Product::factory(5)->outOfStock()->create();
+
+        // Create products with all sizes
+        Product::factory(5)->withAllSizes()->create();
+
+        // Create products without size selection
+        Product::factory(3)->withoutSizes()->create();
+
+        // Create regular products with random sizes (default behavior)
+        Product::factory(10)->create();
     }
 }

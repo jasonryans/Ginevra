@@ -29,7 +29,9 @@ class ProductController extends Controller
             'foto_product' => 'required|array|min:1',
             'foto_product.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0'
+            'stock' => 'required|integer|min:0',
+            'available_sizes' => 'required|array',
+            'available_sizes.*' => 'in:XS,S,XM,M,L,XL,2XL'
         ]);
 
         $data = $request->only(['category_id', 'name', 'description', 'price', 'stock']);
@@ -39,6 +41,8 @@ class ProductController extends Controller
             $photos[] = $photo->store('products', 'public');
         }
         $data['foto_product'] = json_encode($photos);
+
+        $data['available_sizes'] = $request->has('available_sizes') ?  json_encode($request->available_sizes) : null;
 
         Product::create($data);
 
@@ -61,7 +65,9 @@ class ProductController extends Controller
             'foto_product' => 'required|array',
             'foto_product.*' => 'image|mimes:jpg,jpeg,png|max:2048',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0'
+            'stock' => 'required|integer|min:0',
+            'available_sizes' => 'required|array',
+            'available_sizes.*' => 'in:XS,S,XM,M,L,XL,2XL'
         ]);
 
         $data = $request->only(['category_id', 'name', 'description', 'price', 'stock']);
@@ -74,6 +80,8 @@ class ProductController extends Controller
             }
             $data['foto_product'] = json_encode($photos);
         }
+
+        $data['available_sizes'] = $request->has('available_sizes') ? json_encode($request->available_sizes) : null;
 
         $product->update($data);
 

@@ -26,6 +26,21 @@
         </div>
 
         <div class="mt-6">
+            <span class="font-bold mb-2 dark:text-gray-200">Available Sizes:</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+                @if ($product->available_sizes)
+                    @php
+                        $sizes = json_decode($product->available_sizes, true);
+                    @endphp
+                    @foreach ($sizes as $size)
+                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">{{ $size }}</span>
+                    @endforeach
+                @else
+                    <span class="text-red-500">No sizes available</span>
+                @endif
+            </div>
+
+        <div class="mt-6">
             <span class="font-bold mb-2 dark:text-gray-200">Description:</span>
             <p class="dark:text-gray-500 mt-2">{{ $product->description }}</p>
         </div>

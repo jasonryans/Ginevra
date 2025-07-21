@@ -65,52 +65,30 @@
             <div class="product-details">
                 <!-- Product Title -->
                 <h1 class="product-title">{{ $product->name }}</h1>
-                
-                <!-- Price -->
-                <div class="product-price-section">
-                    <span class="current-price">IDR {{ number_format($product->price, 0, ',', '.') }}</span>
-                    @if (isset($product->sale_price) && $product->sale_price < $product->price)
-                        <span class="original-price">IDR {{ number_format($product->sale_price, 0, ',', '.') }}</span>
-                    @endif
-                </div>
 
                 <!-- Product Description -->
                 @if ($product->description)
                     <div class="product-description">
-                        <h6>Description</h6>
-                        <p>{{ $product->description }}</p>
+                        <div class="description-content">
+                            @php
+                                $paragraphs = explode("\n", $product->description);
+                                $paragraphs = array_filter(array_map('trim', $paragraphs));
+                            @endphp
+                            @foreach ($paragraphs as $paragraph)
+                                <p>{{ $paragraph }}</p>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
 
-                <!-- Product Details -->
-                <div class="product-specifications">
-                    @if (isset($product->material))
-                        <div class="spec-item">
-                            <span class="spec-label">Material:</span>
-                            <span class="spec-value">{{ $product->material }}</span>
-                        </div>
-                    @endif
-                    
-                    @if (isset($product->size))
-                        <div class="spec-item">
-                            <span class="spec-label">Size:</span>
-                            <span class="spec-value">{{ $product->size }}</span>
-                        </div>
-                    @endif
-                    
-                    @if (isset($product->weight))
-                        <div class="spec-item">
-                            <span class="spec-label">Weight:</span>
-                            <span class="spec-value">{{ $product->weight }}</span>
-                        </div>
-                    @endif
-
-                    @if (isset($product->care_instructions))
-                        <div class="spec-item">
-                            <span class="spec-label">Care:</span>
-                            <span class="spec-value">{{ $product->care_instructions }}</span>
-                        </div>
-                    @endif
+                <!-- Price -->
+                <div class="product-price-section">
+                    <div class="price-content">
+                        <span class="current-price">IDR {{ number_format($product->price, 0, ',', '.') }}</span>
+                        @if (isset($product->sale_price) && $product->sale_price < $product->price)
+                            <span class="original-price">IDR {{ number_format($product->sale_price, 0, ',', '.') }}</span>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Size Selection (if applicable) -->
@@ -303,10 +281,10 @@
 
 .product-title {
     font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    font-weight: 600;
+    font-size: 1.7rem;
+    font-weight: 400;
     color: var(--primary-black);
-    margin-bottom: 8px;
+    margin-bottom: 24px;
     line-height: 1.2;
 }
 
@@ -323,35 +301,47 @@
     margin-bottom: 24px;
 }
 
+.price-content {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
 .current-price {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-black);
+    color: var(--text-gray);
+    line-height: 1.7;
+    font-size: 18px;
+    font-weight: normal;
 }
 
 .original-price {
-    font-size: 1.4rem;
-    color: #888;
+    color: var(--text-gray);
+    line-height: 1.7;
+    font-size: 18px;
     text-decoration: line-through;
-    margin-left: 12px;
 }
 
 .product-description {
     margin-bottom: 24px;
 }
 
-.product-description h6 {
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--primary-black);
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-}
-
 .product-description p {
     color: var(--text-gray);
     line-height: 1.7;
+    margin-bottom: 0;
+}
+
+.description-content {
+    color: var(--text-gray);
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+.description-content p {
+    margin-bottom: 0;
+}
+
+.description-content p:last-child {
     margin-bottom: 0;
 }
 
@@ -752,6 +742,13 @@ document.addEventListener('keydown', function(event) {
 document.querySelector('.add-to-cart').addEventListener('click', function() {
     const quantity = document.getElementById('quantity').value;
     const selectedSize = document.querySelector('.size-btn.active')?.dataset.size || null;
+    
+    // Check if size selection is required
+    const hasSizes = document.querySelector('.size-selection');
+    if (hasSizes && !selectedSize) {
+        alert('Please select a size before adding to cart.');
+        return;
+    }
     
     // Here you would typically send an AJAX request to add the item to cart
     console.log('Adding to cart:', {

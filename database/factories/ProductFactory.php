@@ -22,6 +22,18 @@ class ProductFactory extends Factory
             'https://shopatvelvet.com/wp-content/uploads/2025/01/KANTOR2390-960x1440.jpeg' // Example second image
         ];
 
+        // Define all available sizes
+        $allSizes = ['XS', 'S', 'XM', 'M', 'L', 'XL', '2XL'];
+        
+        // Randomly select 3-6 sizes for each product
+        $selectedSizes = fake()->randomElements($allSizes, fake()->numberBetween(3, 6));
+        
+        // Sort sizes in logical order
+        $sizeOrder = ['XS', 'S', 'XM', 'M', 'L', 'XL', '2XL'];
+        usort($selectedSizes, function($a, $b) use ($sizeOrder) {
+            return array_search($a, $sizeOrder) - array_search($b, $sizeOrder);
+        });
+
         return [
             'category_id' => fake()->numberBetween(1, 4),
             'name' => fake()->words(3, true),
@@ -29,6 +41,7 @@ class ProductFactory extends Factory
             'foto_product' => json_encode($images), // Store as JSON array
             'price' => fake()->randomFloat(2, 100000, 300000),
             'stock' => fake()->numberBetween(0, 300),
+            'available_sizes' => json_encode($selectedSizes), // Add available sizes
         ];
     }
 
@@ -49,6 +62,26 @@ class ProductFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'stock' => fake()->numberBetween(10, 100),
+        ]);
+    }
+
+    /**
+     * Indicate that the product has all sizes available.
+     */
+    public function withAllSizes(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'available_sizes' => json_encode(['XS', 'S', 'XM', 'M', 'L', 'XL', '2XL']),
+        ]);
+    }
+
+    /**
+     * Indicate that the product has no sizes (one-size-fits-all or no size selection needed).
+     */
+    public function withoutSizes(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'available_sizes' => null,
         ]);
     }
 }
