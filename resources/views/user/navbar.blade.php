@@ -16,7 +16,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Sale</a>
                 </li>
-                <li class="nav-item dropdown">
+                 <li class="nav-item dropdown">
                     <a class="nav-link {{ request()->is('shop*') ? 'active' : '' }}" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: inline-flex; align-items: center;">
                         SHOP
                         <span class="svg-wrapper ms-1">
@@ -26,22 +26,41 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="shopDropdown">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'tops') }}">Tops</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'bottoms') }}">Bottoms</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'outerwear') }}">Outerwear</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('user.shop.category', 'dress') }}">Dress</a>
-                        </li>
+                        @if(isset($categories))
+                            @foreach($categories as $category)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('user.shop.category', strtolower($category->name)) }}">{{ $category->name }}</a>
+                                </li>
+                            @endforeach
+                        @else
+                            <li>
+                                <span class="dropdown-item-text">No categories available</span>
+                            </li>
+                        @endif
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('collections*') ? 'active' : '' }}" href="{{ url('/collections') }}">Collections</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link {{ request()->is('collections*') ? 'active' : '' }}" href="#" id="collectionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: inline-flex; align-items: center;">
+                        Featured
+                        <span class="svg-wrapper ms-1">
+                            <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                            </svg>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="collectionsDropdown">
+                        @if(isset($featuredCollections))
+                            @foreach($featuredCollections as $collection)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('user.collection.featured', $collection->id) }}">{{ $collection->name }}</a>
+                                </li>
+                            @endforeach
+                        @else
+                            <li>
+                                <span class="dropdown-item-text">No collections available</span>
+                            </li>
+                        @endif
+                    </ul>
                 </li>
             </ul>
             
@@ -126,6 +145,18 @@
         
         shopDropdown.addEventListener('hide.bs.dropdown', function () {
             shopCaretIcon.style.transform = 'rotate(0deg)';
+        });
+        
+        // Collections Arrow
+        const collectionsDropdown = document.getElementById('collectionsDropdown');
+        const collectionsCaretIcon = collectionsDropdown.querySelector('.icon-caret');
+        
+        collectionsDropdown.addEventListener('show.bs.dropdown', function () {
+            collectionsCaretIcon.style.transform = 'rotate(180deg)';
+        });
+        
+        collectionsDropdown.addEventListener('hide.bs.dropdown', function () {
+            collectionsCaretIcon.style.transform = 'rotate(0deg)';
         });
         
         // Profile Arrow

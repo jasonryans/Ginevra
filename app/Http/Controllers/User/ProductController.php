@@ -29,19 +29,9 @@ class ProductController extends Controller
 
     public function category($category)
     {
-        // Map URL slugs to category names from your seeder
-        $categoryMap = [
-            'tops' => 'Tops',
-            'bottoms' => 'Bottoms', 
-            'outerwear' => 'Outerwear',
-            'dress' => 'Dress',
-        ];
+        // Convert URL parameter to title case for database lookup
+        $categoryName = ucfirst(strtolower($category));
         
-        if (!isset($categoryMap[$category])) {
-            abort(404);
-        }
-        
-        $categoryName = $categoryMap[$category];
         $categoryModel = Category::where('name', $categoryName)->first();
         
         if (!$categoryModel) {
@@ -62,19 +52,9 @@ class ProductController extends Controller
     // New method for AJAX pagination
     public function categoryPaginate(Request $request, $category)
     {
-        // Map URL slugs to category names
-        $categoryMap = [
-            'tops' => 'Tops',
-            'bottoms' => 'Bottoms', 
-            'outerwear' => 'Outerwear',
-            'dress' => 'Dress',
-        ];
+        // Convert URL parameter to title case for database lookup
+        $categoryName = ucfirst(strtolower($category));
         
-        if (!isset($categoryMap[$category])) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
-        
-        $categoryName = $categoryMap[$category];
         $categoryModel = Category::where('name', $categoryName)->first();
         
         if (!$categoryModel) {
@@ -104,5 +84,15 @@ class ProductController extends Controller
             'hasMore' => $hasMore,
             'currentPage' => $page
         ]);
+    }
+
+    public function featured()
+    {
+        $featuredProducts = Product::where('feature_id', true)
+                                   ->with('category')
+                                   ->take(12)
+                                   ->get();
+        $categories = Category::all();
+        return view('user.collection.featured', compact('featuredProducts', 'categories'));
     }
 }

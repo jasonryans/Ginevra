@@ -23,8 +23,17 @@ class DatabaseSeeder extends Seeder
             'is_admin' => '1', 
         ]);
 
+        User::factory()->create([
+            'name' => 'James',
+            'username' => 'jameslee', 
+            'email' => 'james1@gmail.com',
+            'password' => bcrypt('james123'), 
+            'is_admin' => '0', 
+        ]);
+
         $this->call([
-            CategoriesSeeder::class, // Run categories first
+            FeatureSeeder::class,
+            CategoriesSeeder::class, 
             ProductSeeder::class,
         ]);
     }

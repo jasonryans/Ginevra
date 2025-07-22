@@ -36,6 +36,7 @@ class ProductFactory extends Factory
 
         return [
             'category_id' => fake()->numberBetween(1, 4),
+            'feature_id' => fake()->numberBetween(1, 2), 
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(1),
             'foto_product' => json_encode($images), // Store as JSON array

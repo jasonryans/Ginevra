@@ -9,11 +9,12 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'name', 'description', 'foto_product', 'price', 'stock', 'available_sizes'];
+    protected $fillable = ['category_id', 'feature_id', 'name', 'description', 'foto_product', 'price', 'stock', 'available_sizes'];
 
     protected $casts = [
         'foto_product' => 'array', 
         'available_sizes' => 'array',
+        'feature_id' => 'array',
     ];
 
     public function category()
@@ -35,6 +36,11 @@ class Product extends Model
     {
         return $this->hasMany(Review::class);
     }
+
+    public function products()
+    {
+        return $this->belongsTo(Product::class);
+    } 
 
     public function reviewers()
     {
