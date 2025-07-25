@@ -6,25 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Feature;
 use Illuminate\Http\Request;
 
-class FeatureController extends Controller
+class FeaturedController extends Controller
 {
     public function index()
     {
         $features = Feature::all();
-        return view('admin.features.index', compact('features'));
+        return view('admin.featured.index', compact('features'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:features,name',
-            'product_id' => 'required|exists:products,id',
         ], [
             'name.required' => 'Nama fitur wajib diisi.',
             'name.unique' => 'Fitur dengan nama ini sudah ada.',
             'name.max' => 'Nama fitur maksimal 255 karakter.',
-            'product_id.required' => 'Produk wajib dipilih.',
-            'product_id.exists' => 'Produk yang dipilih tidak valid.',
         ]);
 
         try {
@@ -41,13 +38,10 @@ class FeatureController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:features,name,' . $feature->id,
-            'product_id' => 'required|exists:products,id',
         ], [
             'name.required' => 'Nama fitur wajib diisi.',
             'name.unique' => 'Fitur dengan nama ini sudah ada.',
             'name.max' => 'Nama fitur maksimal 255 karakter.',
-            'product_id.required' => 'Produk wajib dipilih.',
-            'product_id.exists' => 'Produk yang dipilih tidak valid.',
         ]);
 
         try {

@@ -14,12 +14,16 @@ class Product extends Model
     protected $casts = [
         'foto_product' => 'array', 
         'available_sizes' => 'array',
-        'feature_id' => 'array',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function feature()
+    {
+        return $this->belongsTo(Feature::class);
     }
 
     public function orderItems()

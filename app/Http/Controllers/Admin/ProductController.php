@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Feature;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
     public function index(){
-        $products = Product::with('category')->get();
+        $products = Product::with('category', 'feature')->get();
         return view('admin.products.index', compact('products'));
     }
     
      public function create()
     {
         $categories = Category::all();
-        return view('admin.products.create', compact('categories'));
+        $features = Feature::all(); 
+        return view('admin.products.create', compact('categories', 'features'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'feature_id' => 'nullable|exists:features,id', 
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'foto_product' => 'required|array|min:1',
@@ -44,6 +47,10 @@ class ProductController extends Controller
 
         $data['available_sizes'] = $request->has('available_sizes') ?  json_encode($request->available_sizes) : null;
 
+        if (empty($data['feature_id'])) {
+            $data['feature_id'] = null;
+        }
+
         Product::create($data);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -52,14 +59,17 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all();
+        $features = Feature::all();
         $product->load('category');
-        return view('admin.products.edit', compact('product', 'categories'));
+        $product->load('feature');
+        return view('admin.products.edit', compact('product', 'categories', 'features'));
     }
 
     public function update(Request $request, Product $product)
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'feature_id' => 'nullable|exists:features,id', 
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'foto_product' => 'required|array',
@@ -72,7 +82,6 @@ class ProductController extends Controller
 
         $data = $request->only(['category_id', 'name', 'description', 'price', 'stock']);
 
-        // Handle photo updates
         if ($request->hasFile('foto_product')) {
             $photos = [];
             foreach ($request->file('foto_product') as $photo) {
@@ -82,6 +91,10 @@ class ProductController extends Controller
         }
 
         $data['available_sizes'] = $request->has('available_sizes') ? json_encode($request->available_sizes) : null;
+
+        if (empty($data['feature_id'])) {
+            $data['feature_id'] = null;
+        }
 
         $product->update($data);
 

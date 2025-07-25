@@ -4,7 +4,7 @@
             Product List
         </h2>
     </x-slot>
-<div class="max-w-6xl mx-auto py-8">
+<div class="max-w-7xl mx-auto py-8">
     @if (session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 dark:bg-green-800 dark:border-green-600 dark:text-green-100">
             <div class="flex">
@@ -27,6 +27,7 @@
                 <th class="py-3 px-4 dark:text-gray-200">Foto Produk</th>
                 <th class="py-3 px-4 dark:text-gray-200">Nama</th>
                 <th class="py-3 px-4 dark:text-gray-200">Kategori</th>
+                <th class="py-3 px-4 dark:text-gray-200">Feature</th>
                 <th class="py-3 px-4 dark:text-gray-200">Harga</th>
                 <th class="py-3 px-4 dark:text-gray-200">Stok</th>
                 <th class="py-3 px-4 dark:text-gray-200">Aksi</th>
@@ -40,21 +41,41 @@
                             @php
                                 $photos = json_decode($product->foto_product, true);
                             @endphp
-                            @if(is_array($photos) && count($photos) > 0)
-                                <img src="{{ asset('storage/' . $photos[0]) }}" 
-                                class="w-32 h-32 object-cover rounded shadow" 
-                                alt="{{ $product->name }}">
+                            @if (is_array($photos) && count($photos) > 0)
+                                <div class="relative w-32 h-32 overflow-hidden rounded shadow group">
+                                    <img src="{{ Str::startsWith($photos[0], 'http') ? $photos[0] : asset('storage/' . $photos[0]) }}" 
+                                        alt="{{ $product->name }}" 
+                                        class="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0">
+                                    @if (count($photos) > 1)
+                                        <img src="{{ Str::startsWith($photos[1], 'http') ? $photos[1] : asset('storage/' . $photos[1]) }}" 
+                                            alt="{{ $product->name }}" 
+                                            class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    @endif
+                                </div>
                             @else
-                                <span class="italic text-gray-400 dark:text-gray-500">No Image</span>
+                                <div class="w-32 h-32 bg-gray-200 dark:bg-gray-600 rounded shadow flex items-center justify-center">
+                                    <span class="italic text-gray-400 dark:text-gray-500 text-sm">No Image</span>
+                                </div>
                             @endif
                         @else
-                            <span class="italic text-gray-400 dark:text-gray-500">No Image</span>
+                            <div class="w-32 h-32 bg-gray-200 dark:bg-gray-600 rounded shadow flex items-center justify-center">
+                                <span class="italic text-gray-400 dark:text-gray-500 text-sm">No Image</span>
+                            </div>
                         @endif
                     </td>
                     <td class="py-2 px-4 font-medium dark:text-gray-200">{{ $product->name }}</td>
                     <td class="py-2 px-4">
                         @if($product->category)
                             <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{ $product->category->name }}</span>
+                        @else
+                            <span class="italic text-gray-400 dark:text-gray-500">No Category</span>
+                        @endif
+                    </td>
+                    <td class="py-2 px-4">
+                        @if($product->feature)
+                            <span class="inline-block bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ $product->feature->name }}</span>
+                        @else
+                            <span class="italic text-gray-400 dark:text-gray-500">No Feature</span>
                         @endif
                     </td>
                     <td class="py-2 px-4 dark:text-gray-200">IDR {{ number_format($product->price, 0, ',', '.') }}</td>

@@ -9,7 +9,7 @@ class Feature extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'product_id'];
+    protected $fillable = ['name'];
 
     public function products()
     {

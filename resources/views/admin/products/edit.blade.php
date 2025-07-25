@@ -19,19 +19,17 @@
                 <label class="dark:text-gray-200">Description</label>
                 <textarea name="description" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>{{ old('description', $product->description) }}</textarea>
             </div>
-            
+
             <div>
-                <label class="block mb-2 font-medium dark:text-gray-200">Category</label>
-                <select name="category_id" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
-                    <option value="">Select Category</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <label class="dark:text-gray-200">Price</label>
+                <input type="number" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
             </div>
             
+            <div>
+                <label class="dark:text-gray-200">Stock</label>
+                <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+            </div>
+
             <div>
                 <label class="dark:text-gray-200">Product Photos</label>
                 <input type="file" name="foto_product[]" multiple class="w-full dark:text-gray-200" accept="image/*">
@@ -50,16 +48,34 @@
             </div>
 
             <div>
-                <label class="dark:text-gray-200">Price</label>
-                <input type="number" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
-            </div>
-            
-            <div>
-                <label class="dark:text-gray-200">Stock</label>
-                <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                <label class="block mb-2 font-medium dark:text-gray-200">Category</label>
+                <select name="category_id" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                    <option value="">Select Category</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-                        <div>
+            <div>
+                <label class="block mb-2 font-medium dark:text-gray-200">Feature <span class="text-sm text-gray-500">(Optional)</span></label>
+                <select name="feature_id" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">Select Feature (Optional)</option>
+                    @foreach ($features as $feature)
+                        <option value="{{ $feature->id }}" {{ old('feature_id', $product->feature_id) == $feature->id ? 'selected' : '' }}>
+                            {{ $feature->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-sm text-gray-500 mt-1">You can optionally assign this product to a feature for special promotion or highlighting</p>
+                @if($product->feature)
+                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">Currently assigned to: <strong>{{ $product->feature->name }}</strong></p>
+                @endif
+            </div>
+
+            <div>
                 <label class="block font-medium dark:text-gray-200 mb-3">Available Sizes</label>
                 <div class="grid grid-cols-4 gap-3">
                     @php
@@ -100,7 +116,6 @@
                 @endif
             </div>
 
-            
             <div class="flex space-x-2">
                 <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Update</button>
                 <a href="{{ route('admin.products.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Back</a>

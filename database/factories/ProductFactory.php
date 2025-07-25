@@ -36,7 +36,7 @@ class ProductFactory extends Factory
 
         return [
             'category_id' => fake()->numberBetween(1, 4),
-            'feature_id' => fake()->numberBetween(1, 2), 
+            'feature_id' => fake()->optional(0.5)->numberBetween(1, 2), 
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(1),
             'foto_product' => json_encode($images), // Store as JSON array
@@ -83,6 +83,26 @@ class ProductFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'available_sizes' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the product has no feature.
+     */
+    public function withoutFeature(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'feature_id' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the product has a specific feature.
+     */
+    public function withFeature($featureId = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'feature_id' => $featureId ?? fake()->numberBetween(1, 2),
         ]);
     }
 }
