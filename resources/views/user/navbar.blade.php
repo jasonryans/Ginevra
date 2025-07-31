@@ -4,32 +4,39 @@
         <a class="navbar-brand font-playfair" href="{{ url('/') }}">
             <strong>Ginevra</strong>
         </a>
-        
+
         <!-- Toggle button for mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <!-- Navigation items -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Sale</a>
                 </li>
-                 <li class="nav-item dropdown">
-                    <a class="nav-link {{ request()->is('shop*') ? 'active' : '' }}" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: inline-flex; align-items: center;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link {{ request()->is('shop*') ? 'active' : '' }}" href="#" id="shopDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="display: inline-flex; align-items: center;">
                         SHOP
                         <span class="svg-wrapper ms-1">
-                            <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
-                                <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                            <svg class="icon icon-caret" viewBox="0 0 10 6"
+                                style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708"
+                                    clip-rule="evenodd" />
                             </svg>
                         </span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="shopDropdown">
-                        @if(isset($categories))
-                            @foreach($categories as $category)
+                        @if (isset($categories))
+                            @foreach ($categories as $category)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('user.shop.category', strtolower($category->name)) }}">{{ $category->name }}</a>
+                                    <a class="dropdown-item"
+                                        href="{{ route('user.shop.category', strtolower($category->name)) }}">{{ $category->name }}</a>
                                 </li>
                             @endforeach
                         @else
@@ -40,30 +47,36 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link {{ request()->is('collections*') ? 'active' : '' }}" href="#" id="collectionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: inline-flex; align-items: center;">
+                    <a class="nav-link {{ request()->is('featured*') ? 'active' : '' }}" href="#"
+                        id="collectionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="display: inline-flex; align-items: center;">
                         Featured
                         <span class="svg-wrapper ms-1">
-                            <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
-                                <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                            <svg class="icon icon-caret" viewBox="0 0 10 6"
+                                style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708"
+                                    clip-rule="evenodd" />
                             </svg>
                         </span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="collectionsDropdown">
-                        @if(isset($featuredCollections))
-                            @foreach($featuredCollections as $collection)
+                        @if (isset($features) && $features->count() > 0)
+                            @foreach ($features as $feature)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('user.collection.featured', $collection->id) }}">{{ $collection->name }}</a>
+                                    <a class="dropdown-item"
+                                        href="{{ route('user.collection.featured', strtolower(str_replace(' ', '-', $feature->name))) }}">{{ $feature->name }}</a>
                                 </li>
                             @endforeach
                         @else
                             <li>
-                                <span class="dropdown-item-text">No collections available</span>
+                                <span class="dropdown-item-text">No features available</span>
                             </li>
                         @endif
                     </ul>
                 </li>
             </ul>
-            
+
             <!-- Right side items -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -90,12 +103,16 @@
                     </li>
                 @else
                     <li class="nav-item dropdown">
-                        <a class="nav-link d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-2"></i>
                             {{ Auth::user()->name }}
                             <span class="svg-wrapper ms-1">
-                                <svg class="icon icon-caret" viewBox="0 0 10 6" style="width: 10px; height: 6px; transition: transform 0.3s ease;">
-                                    <path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"/>
+                                <svg class="icon icon-caret" viewBox="0 0 10 6"
+                                    style="width: 10px; height: 6px; transition: transform 0.3s ease;">
+                                    <path fill="currentColor" fill-rule="evenodd"
+                                        d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </span>
                         </a>
@@ -111,14 +128,11 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ url('/settings') }}">
-                                    <i class="fas fa-cog me-2"></i>Settings
-                                </a>
+                                <hr class="dropdown-divider">
                             </li>
-                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-sign-out-alt me-2"></i>Logout
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -138,36 +152,36 @@
         // Shop Arrow
         const shopDropdown = document.getElementById('shopDropdown');
         const shopCaretIcon = shopDropdown.querySelector('.icon-caret');
-        
-        shopDropdown.addEventListener('show.bs.dropdown', function () {
+
+        shopDropdown.addEventListener('show.bs.dropdown', function() {
             shopCaretIcon.style.transform = 'rotate(180deg)';
         });
-        
-        shopDropdown.addEventListener('hide.bs.dropdown', function () {
+
+        shopDropdown.addEventListener('hide.bs.dropdown', function() {
             shopCaretIcon.style.transform = 'rotate(0deg)';
         });
-        
+
         // Collections Arrow
         const collectionsDropdown = document.getElementById('collectionsDropdown');
         const collectionsCaretIcon = collectionsDropdown.querySelector('.icon-caret');
-        
-        collectionsDropdown.addEventListener('show.bs.dropdown', function () {
+
+        collectionsDropdown.addEventListener('show.bs.dropdown', function() {
             collectionsCaretIcon.style.transform = 'rotate(180deg)';
         });
-        
-        collectionsDropdown.addEventListener('hide.bs.dropdown', function () {
+
+        collectionsDropdown.addEventListener('hide.bs.dropdown', function() {
             collectionsCaretIcon.style.transform = 'rotate(0deg)';
         });
-        
+
         // Profile Arrow
         const profileDropdown = document.getElementById('navbarDropdown');
         const profileCaretIcon = profileDropdown.querySelector('.icon-caret');
-        
-        profileDropdown.addEventListener('show.bs.dropdown', function () {
+
+        profileDropdown.addEventListener('show.bs.dropdown', function() {
             profileCaretIcon.style.transform = 'rotate(180deg)';
         });
-        
-        profileDropdown.addEventListener('hide.bs.dropdown', function () {
+
+        profileDropdown.addEventListener('hide.bs.dropdown', function() {
             profileCaretIcon.style.transform = 'rotate(0deg)';
         });
     });

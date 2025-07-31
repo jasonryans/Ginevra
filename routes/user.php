@@ -9,8 +9,11 @@ Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/shop/category/{category}', [ProductController::class, 'category'])->name('user.shop.category');
 Route::get('/shop/category/{category}/paginate', [ProductController::class, 'categoryPaginate'])->name('user.category.paginate'); // Add this line for AJAX pagination
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('user.products.show');
-Route::get('/collection/{id}', [ProductController::class, 'featured'])->name('user.collection.featured');
 
+Route::get('/featured/{type}', [ProductController::class, 'featured'])->name('user.collection.featured');
+Route::get('/featured', [ProductController::class, 'featured'])->name('user.collection.featured.all');
+Route::get('/featured/paginate', [ProductController::class, 'featuredPaginate'])->name('user.featured.paginate');
+Route::get('/featured/{type}/paginate', [ProductController::class, 'featuredPaginate'])->name('user.featured.type.paginate');
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [ProductController::class, 'index'])->name('user.home');

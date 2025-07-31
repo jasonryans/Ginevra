@@ -23,10 +23,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('user.navbar', function ($view) {
-            $featuredCollections = Feature::all(); 
             $categories = Category::all(); 
+            $features = Feature::all();
             
-            $view->with('featuredCollections', $featuredCollections);
+            $view->with('features', $features);
             $view->with('categories', $categories);
         });
     }
