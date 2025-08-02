@@ -36,15 +36,20 @@ class Product extends Model
         return $this->hasMany(Cart::class);
     }
 
+    /**
+     * Get users who have this product in their cart.
+     */
+    public function cartUsers()
+    {
+        return $this->belongsToMany(User::class, 'carts')
+                    ->withPivot('quantity')
+                    ->withTimestamps();
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
-
-    public function products()
-    {
-        return $this->belongsTo(Product::class);
-    } 
 
     public function reviewers()
     {

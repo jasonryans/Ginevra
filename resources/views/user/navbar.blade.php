@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand font-playfair" href="{{ url('/') }}">
+        <a class="navbar-brand font-playfair" href="{{ route('home') }}">
             <strong>Ginevra</strong>
         </a>
 
@@ -80,22 +80,23 @@
             <!-- Right side items -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/search') }}">
-                        <i class="fas fa-search"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/wishlist') }}">
-                        <i class="fas fa-heart"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link position-relative" href="{{ url('/cart') }}">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            <span class="cart-count">0</span>
-                        </span>
-                    </a>
+                    @auth
+                        <a class="nav-link position-relative" href="{{ route('user.carts.index') }}">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="cart-count">
+                                    {{ Auth::user()->carts()->sum('quantity') }}
+                                </span>
+                            </span>
+                        </a>
+                    @else
+                        <a class="nav-link position-relative" href="{{ route('login') }}">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="cart-count">0</span>
+                            </span>
+                        </a>
+                    @endauth
                 </li>
                 @guest
                     <li class="nav-item">

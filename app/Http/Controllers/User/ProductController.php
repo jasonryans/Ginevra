@@ -187,4 +187,114 @@ class ProductController extends Controller
             'currentPage' => $page
         ]);
     }
+
+    public function carts()
+    {
+        $user = Auth::user();
+        $carts = $user->carts()->with('product')->get();
+        
+        return view('user.carts.index', compact('carts'));
+    }
+
+    public function addToCart(Request $request)
+    {
+        $user = Auth::user();
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity', 1);
+        
+        // Check if product exists
+        $product = Product::findOrFail($productId);
+        
+        // Check if already in cart
+        $existingCart = $user->carts()->where('product_id', $productId)->first();
+        
+        if ($existingCart) {
+            // Update quantity
+            $existingCart->quantity += $quantity;
+            $existingCart->save();
+        } else {
+            // Add new cart item
+            $user->carts()->create([
+                'product_id' => $productId,
+                'quantity' => $quantity
+            ]);
+        }
+        
+        // Get updated cart count
+        $cartCount = $user->carts()->sum('quantity');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to cart',
+            'cartCount' => $cartCount
+        ]);
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $user = Auth::user();
+        $productId = $request->input('product_id');
+        
+        $cart = $user->carts()->where('product_id', $productId)->first();
+        
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found in cart'
+            ]);
+        }
+        
+        $cart->delete();
+        
+        // Get updated cart count
+        $cartCount = $user->carts()->sum('quantity');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product removed from cart',
+            'cartCount' => $cartCount
+        ]);
+    }
+
+    public function updateCartQuantity(Request $request)
+    {
+        $user = Auth::user();
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity');
+        
+        if ($quantity <= 0) {
+            return $this->removeFromCart($request);
+        }
+        
+        $cart = $user->carts()->where('product_id', $productId)->first();
+        
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found in cart'
+            ]);
+        }
+        
+        $cart->quantity = $quantity;
+        $cart->save();
+        
+        // Get updated cart count
+        $cartCount = $user->carts()->sum('quantity');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart updated',
+            'cartCount' => $cartCount
+        ]);
+    }
+
+    public function getCartCount()
+    {
+        $user = Auth::user();
+        $cartCount = $user ? $user->carts()->sum('quantity') : 0;
+        
+        return response()->json([
+            'cartCount' => $cartCount
+        ]);
+    }
 }

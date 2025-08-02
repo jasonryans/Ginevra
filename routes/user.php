@@ -15,15 +15,21 @@ Route::get('/featured', [ProductController::class, 'featured'])->name('user.coll
 Route::get('/featured/paginate', [ProductController::class, 'featuredPaginate'])->name('user.featured.paginate');
 Route::get('/featured/{type}/paginate', [ProductController::class, 'featuredPaginate'])->name('user.featured.type.paginate');
 
+Route::get('/cart', [ProductController::class, 'carts'])->name('user.carts.index');
+
 Route::middleware('auth')->group(function () {
     Route::get('/home', [ProductController::class, 'index'])->name('user.home');
-    
+
+    // Route::get('/cart-test', function() {
+    //     return view('user.products.carts.index', ['carts' => collect()]);
+    // })->name('cart.test');
+
     // Uncomment and add other user routes as needed
     // Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     // Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('reviews.update');
     // Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     // Route::get('/shop/category/{category}', [ProductController::class, 'category'])->name('user.shop.category');
-    
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
@@ -31,4 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('user.profile.destroy');
     Route::get('/profile/picture/edit', [ProfilePictureController::class, 'edit'])->name('user.profile.picture.edit');
     Route::post('/profile/picture', [ProfilePictureController::class, 'update'])->name('user.profile.picture.update');
+
+    // Cart routes
+    Route::post('/cart/add', [ProductController::class, 'addToCart'])->name('user.products.cart.add');
+    Route::delete('/cart/remove', [ProductController::class, 'removeFromCart'])->name('user.products.cart.remove');
+    Route::patch('/cart/update', [ProductController::class, 'updateCartQuantity'])->name('user.products.cart.update');
+    Route::get('/cart/count', [ProductController::class, 'getCartCount'])->name('user.products.cart.count');
 });

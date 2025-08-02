@@ -101,4 +101,19 @@ class User extends Authenticatable
         // Otherwise, return the URL from storage
         return Storage::url($this->profile_picture);
     }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * Get the user's cart products (many-to-many through cart).
+     */
+    public function cartProducts()
+    {
+        return $this->belongsToMany(Product::class, 'carts')
+                    ->withPivot('quantity')
+                    ->withTimestamps();
+    }
 }
