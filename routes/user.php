@@ -39,8 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/picture', [ProfilePictureController::class, 'update'])->name('user.profile.picture.update');
 
     // Cart routes
-    Route::post('/cart/add', [ProductController::class, 'addToCart'])->name('user.products.cart.add');
-    Route::delete('/cart/remove', [ProductController::class, 'removeFromCart'])->name('user.products.cart.remove');
-    Route::patch('/cart/update', [ProductController::class, 'updateCartQuantity'])->name('user.products.cart.update');
-    Route::get('/cart/count', [ProductController::class, 'getCartCount'])->name('user.products.cart.count');
+    Route::post('/cart/add', [ProductController::class, 'addToCart'])->name('user.carts.add');
+    Route::delete('/cart/remove', [ProductController::class, 'removeFromCart'])->name('user.carts.remove');
+    Route::patch('/cart/update', [ProductController::class, 'updateCartQuantity'])->name('user.carts.update');
+    Route::get('/cart/count', [ProductController::class, 'getCartCount'])->name('user.carts.count');
 });

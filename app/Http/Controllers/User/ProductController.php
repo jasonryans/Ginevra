@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\User;
+
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Category;
@@ -14,7 +15,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $categories = Category::all();
-        $features = Feature::all(); 
+        $features = Feature::all();
         return view('user.catalog.homepage', compact('categories', 'features'));
     }
 
@@ -22,35 +23,48 @@ class ProductController extends Controller
     {
         $product = Product::with('category')->findOrFail($id);
         $relatedProducts = Product::where('category_id', $product->category_id)
-                                  ->where('id', '!=', $id)
-                                  ->take(4)
-                                  ->get();  
+            ->where('id', '!=', $id)
+            ->take(4)
+            ->get();
         $categories = Category::all();
-        $features = Feature::all(); 
-        return view('user.products.show', compact('product', 'relatedProducts', 'categories', 'features'));
+        $features = Feature::all();
+
+        // Get previous product within the same category
+        $previousProduct = Product::where('category_id', $product->category_id)
+            ->where('id', '<', $id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        // Get next product within the same category
+        $nextProduct = Product::where('category_id', $product->category_id)
+            ->where('id', '>', $id)
+            ->orderBy('id', 'asc')
+            ->first();
+
+        return view('user.products.show', compact('product', 'relatedProducts', 'categories', 'features', 'previousProduct', 'nextProduct'));
     }
 
     public function category($category)
     {
         // Convert URL parameter to title case for database lookup
         $categoryName = ucfirst(strtolower($category));
-        
+
         $categoryModel = Category::where('name', $categoryName)->first();
-        
+
         if (!$categoryModel) {
             abort(404);
         }
-        
+
         // Get initial 12 products for this category
         $products = Product::where('category_id', $categoryModel->id)
-                          ->with('category')
-                          ->take(12)
-                          ->get();
-        
+            ->with('category')
+            ->take(12)
+            ->get();
+
         $categories = Category::all();
         $features = Feature::all();
 
-        
+
         return view('user.shop.category', compact('products', 'categories', 'categoryModel', 'features'));
     }
 
@@ -59,31 +73,31 @@ class ProductController extends Controller
     {
         // Convert URL parameter to title case for database lookup
         $categoryName = ucfirst(strtolower($category));
-        
+
         $categoryModel = Category::where('name', $categoryName)->first();
-        
+
         if (!$categoryModel) {
             return response()->json(['error' => 'Category not found'], 404);
         }
-        
+
         $page = $request->get('page', 1);
         $perPage = 12;
         $offset = ($page - 1) * $perPage;
-        
+
         // Get products for this page
         $products = Product::where('category_id', $categoryModel->id)
-                          ->with('category')
-                          ->skip($offset)
-                          ->take($perPage)
-                          ->get();
-        
+            ->with('category')
+            ->skip($offset)
+            ->take($perPage)
+            ->get();
+
         // Check if there are more products
         $totalProducts = Product::where('category_id', $categoryModel->id)->count();
         $hasMore = ($offset + $perPage) < $totalProducts;
-        
+
         // Return JSON response with product HTML
         $html = view('user.shop.partials.product-grid', compact('products'))->render();
-        
+
         return response()->json([
             'html' => $html,
             'hasMore' => $hasMore,
@@ -95,37 +109,37 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $features = Feature::all();
-        
+
         if ($type) {
             // Convert URL parameter to title case for database lookup
             $featureName = ucwords(str_replace('-', ' ', $type));
-            
+
             $featureModel = Feature::where('name', $featureName)->first();
-            
+
             if (!$featureModel) {
                 abort(404);
             }
-            
+
             // Get initial 12 products for this feature
             $products = Product::where('feature_id', $featureModel->id)
-                              ->with(['feature'])
-                              ->take(12)
-                              ->get();
-            
+                ->with(['feature'])
+                ->take(12)
+                ->get();
+
             $pageTitle = $featureName;
         } else {
             // Show all products that have any features (feature_id is not null)
             $products = Product::whereNotNull('feature_id')
-                              ->whereHas('feature')
-                              ->with(['feature'])
-                              ->take(12)
-                              ->get();
-            
+                ->whereHas('feature')
+                ->with(['feature'])
+                ->take(12)
+                ->get();
+
             $pageTitle = 'Featured Products';
             $featureModel = null;
         }
-        
-        return view('user.collection.featured', compact('products', 'categories','features', 'pageTitle', 'type', 'featureModel'));
+
+        return view('user.collection.featured', compact('products', 'categories', 'features', 'pageTitle', 'type', 'featureModel'));
     }
 
     // New method for AJAX pagination of featured products
@@ -134,53 +148,53 @@ class ProductController extends Controller
         if ($type) {
             // Convert URL parameter to title case for database lookup
             $featureName = ucwords(str_replace('-', ' ', $type));
-            
+
             $featureModel = Feature::where('name', $featureName)->first();
-            
+
             if (!$featureModel) {
                 return response()->json(['error' => 'Feature not found'], 404);
             }
         }
-        
+
         $page = $request->get('page', 1);
         $perPage = 12;
         $offset = ($page - 1) * $perPage;
-        
+
         if ($type && isset($featureModel)) {
             // Get products for this specific feature
             $products = Product::where('feature_id', $featureModel->id)
-                              ->whereNotNull('feature_id')
-                              ->whereHas('feature')
-                              ->with(['feature'])
-                              ->skip($offset)
-                              ->take($perPage)
-                              ->get();
-            
+                ->whereNotNull('feature_id')
+                ->whereHas('feature')
+                ->with(['feature'])
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+
             // Check if there are more products
             $totalProducts = Product::where('feature_id', $featureModel->id)
-                              ->whereNotNull('feature_id')
-                              ->whereHas('feature')
-                              ->count();
+                ->whereNotNull('feature_id')
+                ->whereHas('feature')
+                ->count();
         } else {
             // Get all featured products
             $products = Product::whereNotNull('feature_id')
-                              ->whereHas('feature')
-                              ->with(['feature'])
-                              ->skip($offset)
-                              ->take($perPage)
-                              ->get();
-            
+                ->whereHas('feature')
+                ->with(['feature'])
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+
             // Check if there are more products
             $totalProducts = Product::whereNotNull('feature_id')
-                              ->whereHas('feature')
-                              ->count();
+                ->whereHas('feature')
+                ->count();
         }
-        
+
         $hasMore = ($offset + $perPage) < $totalProducts;
-        
+
         // Return JSON response with product HTML
         $html = view('user.collection.partials.product-grid', compact('products'))->render();
-        
+
         return response()->json([
             'html' => $html,
             'hasMore' => $hasMore,
@@ -192,63 +206,87 @@ class ProductController extends Controller
     {
         $user = Auth::user();
         $carts = $user->carts()->with('product')->get();
-        
+
         return view('user.carts.index', compact('carts'));
     }
 
     public function addToCart(Request $request)
     {
-        $user = Auth::user();
-        $productId = $request->input('product_id');
-        $quantity = $request->input('quantity', 1);
-        
-        // Check if product exists
-        $product = Product::findOrFail($productId);
-        
-        // Check if already in cart
-        $existingCart = $user->carts()->where('product_id', $productId)->first();
-        
-        if ($existingCart) {
-            // Update quantity
-            $existingCart->quantity += $quantity;
-            $existingCart->save();
-        } else {
-            // Add new cart item
-            $user->carts()->create([
-                'product_id' => $productId,
-                'quantity' => $quantity
+        try {
+            $user = Auth::user();
+            $productId = $request->input('product_id');
+            $quantity = $request->input('quantity', 1);
+            $size = $request->input('size');
+
+            // Check if product exists
+            $product = Product::findOrFail($productId);
+
+            // Check if already in cart (including size if applicable)
+            $existingCart = $user->carts()->where('product_id', $productId);
+
+            // If size is provided, also check for size match
+            if ($size) {
+                $existingCart = $existingCart->where('size', $size);
+            }
+
+            $existingCart = $existingCart->first();
+
+            if ($existingCart) {
+                // Update quantity
+                $existingCart->quantity += $quantity;
+                $existingCart->save();
+            } else {
+                // Add new cart item
+                $cartData = [
+                    'product_id' => $productId,
+                    'quantity' => $quantity
+                ];
+
+                // Add size if provided
+                if ($size) {
+                    $cartData['size'] = $size;
+                }
+
+                $user->carts()->create($cartData);
+            }
+
+            // Get updated cart count (number of distinct products, not total quantity)
+            $cartCount = $user->carts()->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart',
+                'cartCount' => $cartCount
             ]);
+        } catch (\Exception $e) {
+            \Log::error('Add to cart error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add product to cart: ' . $e->getMessage()
+            ], 500);
         }
-        
-        // Get updated cart count
-        $cartCount = $user->carts()->sum('quantity');
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Product added to cart',
-            'cartCount' => $cartCount
-        ]);
     }
 
     public function removeFromCart(Request $request)
     {
         $user = Auth::user();
         $productId = $request->input('product_id');
-        
+
         $cart = $user->carts()->where('product_id', $productId)->first();
-        
+
         if (!$cart) {
             return response()->json([
                 'success' => false,
                 'message' => 'Product not found in cart'
             ]);
         }
-        
+
         $cart->delete();
-        
-        // Get updated cart count
-        $cartCount = $user->carts()->sum('quantity');
-        
+
+        // Get updated cart count (number of distinct products)
+        $cartCount = $user->carts()->count();
+
         return response()->json([
             'success' => true,
             'message' => 'Product removed from cart',
@@ -261,26 +299,26 @@ class ProductController extends Controller
         $user = Auth::user();
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity');
-        
+
         if ($quantity <= 0) {
             return $this->removeFromCart($request);
         }
-        
+
         $cart = $user->carts()->where('product_id', $productId)->first();
-        
+
         if (!$cart) {
             return response()->json([
                 'success' => false,
                 'message' => 'Product not found in cart'
             ]);
         }
-        
+
         $cart->quantity = $quantity;
         $cart->save();
-        
-        // Get updated cart count
-        $cartCount = $user->carts()->sum('quantity');
-        
+
+        // Get updated cart count (number of distinct products)
+        $cartCount = $user->carts()->count();
+
         return response()->json([
             'success' => true,
             'message' => 'Cart updated',
@@ -291,8 +329,8 @@ class ProductController extends Controller
     public function getCartCount()
     {
         $user = Auth::user();
-        $cartCount = $user ? $user->carts()->sum('quantity') : 0;
-        
+        $cartCount = $user ? $user->carts()->count() : 0;
+
         return response()->json([
             'cartCount' => $cartCount
         ]);

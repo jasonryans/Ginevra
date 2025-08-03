@@ -83,16 +83,23 @@
                     @auth
                         <a class="nav-link position-relative" href="{{ route('user.carts.index') }}">
                             <i class="fas fa-shopping-bag"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                <span class="cart-count">
-                                    {{ Auth::user()->carts()->sum('quantity') }}
+                            @php
+                                $cartCount = Auth::user()->carts()->count(); 
+                            @endphp
+                            @if($cartCount > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <span class="cart-count">{{ $cartCount }}</span>
                                 </span>
-                            </span>
+                            @else
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                    <span class="cart-count">0</span>
+                                </span>
+                            @endif
                         </a>
                     @else
                         <a class="nav-link position-relative" href="{{ route('login') }}">
                             <i class="fas fa-shopping-bag"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
                                 <span class="cart-count">0</span>
                             </span>
                         </a>

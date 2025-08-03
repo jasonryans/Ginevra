@@ -738,7 +738,6 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Add to cart functionality
 document.querySelector('.add-to-cart').addEventListener('click', function() {
     const quantity = document.getElementById('quantity').value;
     const selectedSize = document.querySelector('.size-btn.active')?.dataset.size || null;
@@ -746,38 +745,112 @@ document.querySelector('.add-to-cart').addEventListener('click', function() {
     // Check if size selection is required
     const hasSizes = document.querySelector('.size-selection');
     if (hasSizes && !selectedSize) {
-        alert('Please select a size before adding to cart.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Size Required',
+            text: 'Please select a size before adding to cart.',
+            confirmButtonColor: '#d63384'
+        });
         return;
     }
     
-    // Here you would typically send an AJAX request to add the item to cart
-    console.log('Adding to cart:', {
-        productId: '{{ $product->id }}',
-        quantity: quantity,
-        size: selectedSize
-    });
-    
-    // Show success message (you can implement a toast notification)
-    alert('Product added to cart!');
-});
-
-// Add to wishlist functionality
-document.querySelector('.add-to-wishlist').addEventListener('click', function() {
-    const heartIcon = this.querySelector('i');
-    
-    // Toggle heart icon
-    if (heartIcon.classList.contains('far')) {
-        heartIcon.classList.remove('far');
-        heartIcon.classList.add('fas');
-        this.innerHTML = '<i class="fas fa-heart"></i> Added to Wishlist';
-    } else {
-        heartIcon.classList.remove('fas');
-        heartIcon.classList.add('far');
-        this.innerHTML = '<i class="far fa-heart"></i> Add to Wishlist';
-    }
-    
-    // Here you would typically send an AJAX request
-    console.log('Toggling wishlist for product:', '{{ $product->id }}');
+    // Check if user is authenticated
+    @auth
+        // Disable button during request
+        this.disabled = true;
+        this.innerHTML = 'Adding...';
+        
+        // Send AJAX request to add item to cart
+        fetch('{{ route("user.carts.add") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                product_id: '{{ $product->id }}',
+                quantity: parseInt(quantity),
+                size: selectedSize
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data); // Add this for debugging
+            if (data.success) {
+                // Update cart count in navbar
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                const cartBadges = document.querySelectorAll('.position-absolute.badge');
+                
+                cartCountElements.forEach(element => {
+                    element.textContent = data.cartCount;
+                });
+                
+                // Show/hide badge based on cart count
+                cartBadges.forEach(badge => {
+                    if (data.cartCount > 0) {
+                        badge.classList.remove('d-none');
+                    } else {
+                        badge.classList.add('d-none');
+                    }
+                });
+                
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: 'Product has been added to your cart successfully.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+                
+                // Reset button
+                this.disabled = false;
+                this.innerHTML = 'Add to Cart';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.message,
+                    confirmButtonColor: '#d63384'
+                });
+                this.disabled = false;
+                this.innerHTML = 'Add to Cart';
+            }
+        })
+        .catch(error => {
+            console.error('Full error:', error); // Enhanced error logging
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'An error occurred while adding to cart. Please try again.',
+                confirmButtonColor: '#d63384'
+            });
+            this.disabled = false;
+            this.innerHTML = 'Add to Cart';
+        });
+    @else
+        // Redirect to login if not authenticated
+        Swal.fire({
+            icon: 'info',
+            title: 'Login Required',
+            text: 'Please login to add items to your cart.',
+            showCancelButton: true,
+            confirmButtonText: 'Login',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#d63384'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route("login") }}';
+            }
+        });
+    @endauth
 });
 </script>
 @endsection
