@@ -534,22 +534,22 @@
                 </div>
                 <div class="col-md-2 mb-4">
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Term and condition</a></li>
-                        <li><a href="#" class="footer-link">Shipping information</a></li>
-                        <li><a href="#" class="footer-link">Payment confirmation</a></li>
+                        <li><a href="{{ route('user.footer.term') }}" class="footer-link">Term and condition</a></li>
+                        <li><a href="{{ route('user.footer.shipping-information') }}" class="footer-link">Shipping information</a></li>
+                        <li><a href="{{ route('user.footer.payment-confirmation') }}" class="footer-link">Payment confirmation</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
                     <ul class="list-unstyled">
-                        <li><a href="{{ url('/about') }}" class="footer-link">FAQ</a></li>
-                        <li><a href="#" class="footer-link">Return policy</a></li>
-                        <li><a href="{{ url('/contact') }}" class="footer-link">Condition of use</a></li>
+                        <li><a href="{{ route('user.footer.faq') }}" class="footer-link">FAQ</a></li>
+                        <li><a href="{{ route('user.footer.return-policy') }}" class="footer-link">Return policy</a></li>
+                        <li><a href="{{ route('user.footer.condition-of-use') }}" class="footer-link">Condition of use</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">About</a></li>
-                        <li><a href="#" class="footer-link">Contact customer care</a></li>
+                        <li><a href="{{ route('user.footer.about') }}" class="footer-link">About</a></li>
+                        <li><a href="{{ route('user.footer.contact-customer-care') }}" class="footer-link">Contact customer care</a></li>
                     </ul>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\FooterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\ProfileController;
@@ -17,12 +18,18 @@ Route::get('/featured/{type}/paginate', [ProductController::class, 'featuredPagi
 
 Route::get('/cart', [ProductController::class, 'carts'])->name('user.carts.index');
 
+Route::get('/term-and-condition', [FooterController::class, 'term'])->name('user.footer.term');
+Route::get('/shipping-information', [FooterController::class, 'shippingInformation'])->name('user.footer.shipping-information');
+Route::get('/payment-confirmation', [FooterController::class, 'paymentConfirmation'])->name('user.footer.payment-confirmation');
+Route::get('/faq', [FooterController::class, 'faq'])->name('user.footer.faq');
+Route::get('/return-policy', [FooterController::class, 'returnPolicy'])->name('user.footer.return-policy');
+Route::get('/condition-of-use', [FooterController::class, 'conditionOfUse'])->name('user.footer.condition-of-use');
+Route::get('/about', [FooterController::class, 'about'])->name('user.footer.about');
+Route::get('/contact-customer-care', [FooterController::class, 'contactCustomerCare'])->name('user.footer.contact-customer-care');
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/home', [ProductController::class, 'index'])->name('user.home');
-
-    // Route::get('/cart-test', function() {
-    //     return view('user.products.carts.index', ['carts' => collect()]);
-    // })->name('cart.test');
 
     // Uncomment and add other user routes as needed
     // Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
