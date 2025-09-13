@@ -13,7 +13,7 @@
 
         <!-- Navigation items -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Sale</a>
                 </li>
@@ -65,7 +65,7 @@
                             @foreach ($features as $feature)
                                 <li>
                                     <a class="dropdown-item"
-                                        href="{{ route('user.collection.featured', strtolower(str_replace(' ', '-', $feature->name))) }}">{{ $feature->name }}</a>
+                                        href="{{ route('user.collection.featured', strtolower(str_replace(' ', '-', $feature->name))) }}">{{ $feature->name}}</a>
                                 </li>
                             @endforeach
                         @else
