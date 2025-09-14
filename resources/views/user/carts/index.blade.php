@@ -91,7 +91,7 @@
                                 <strong class="total">IDR
                                     {{ number_format($carts->sum(function ($cart) {return $cart->product->price * $cart->quantity;}),0,',','.') }}</strong>
                             </div>
-                            <button class="btn btn-primary w-100">Proceed to Checkout</button>
+                            <a href="{{ route('user.checkout.checkout_form') }}" class="btn btn-primary w-100">Proceed to Checkout</a>                        
                         </div>
                     </div>
                 </div>

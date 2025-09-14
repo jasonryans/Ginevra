@@ -50,4 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/remove', [ProductController::class, 'removeFromCart'])->name('user.carts.remove');
     Route::patch('/cart/update', [ProductController::class, 'updateCartQuantity'])->name('user.carts.update');
     Route::get('/cart/count', [ProductController::class, 'getCartCount'])->name('user.carts.count');
+
+    // Checkout routes
+    Route::get('/checkout', [ProductController::class, 'checkoutForm'])->name('user.checkout.checkout_form');
 });

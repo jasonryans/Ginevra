@@ -341,4 +341,16 @@ class ProductController extends Controller
             'cartCount' => $cartCount
         ]);
     }
+
+    public function checkoutForm()
+    {
+        $user = Auth::user();
+        $carts = $user->carts()->with('product')->get();
+
+        if ($carts->isEmpty()) {
+            return redirect()->route('user.carts.index')->with('error', 'Your cart is empty.');
+        }
+
+        return view('user.checkout.checkout_form', compact('carts'));
+    }
 }
