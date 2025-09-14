@@ -3,8 +3,8 @@
 @section('content')
     <style>
         .hero-background {
-            background-image: url('{{ asset('storage/logo/GINEVRA LOGO-02.png') }}');
-            background-size: fill;
+            background-image: url('{{ asset('storage/logo/background-hero.jpg') }}');
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
             position: relative;
@@ -18,7 +18,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.5);
             z-index: 1;
         }
         
@@ -36,15 +36,187 @@
         .hero-addition-text {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            color: #d63384; /* Accent pink color */
+            color: #eee2e8; /* Accent pink color */
         }
 
         .hero-subtitle {
             text-shadow: 1px 1px 2px rgba(10, 4, 4, 0.5);
             font-family: 'Playfair Display', serif;
             font-weight: 100;
-            color: #d63384;
+            color: #080808;
             font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+
+        /* Product Carousel Styles */
+        .product-carousel-container {
+            position: relative;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .product-carousel .carousel-inner {
+            border-radius: 15px;
+        }
+
+        /* New single product slide styles */
+        .single-product-slide {
+            position: relative;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .carousel-main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .single-product-slide:hover .carousel-main-image {
+            transform: scale(1.05);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 30px 20px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .single-product-slide:hover .slide-overlay {
+            transform: translateY(0);
+        }
+
+        .slide-content {
+            color: white;
+            text-align: center;
+        }
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #eee2e8;
+        }
+
+        .slide-description {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+
+        /* Custom Indicators */
+        .custom-indicators {
+            bottom: 15px;
+            margin-bottom: 0;
+        }
+
+        .custom-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: transparent;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-indicators button.active {
+            background: #eee2e8;
+            border-color: #eee2e8;
+        }
+
+        .custom-indicators button:hover {
+            border-color: #eee2e8;
+        }
+
+        /* Enhanced Carousel Controls */
+        .product-carousel .carousel-control-prev,
+        .product-carousel .carousel-control-next {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-carousel:hover .carousel-control-prev,
+        .product-carousel:hover .carousel-control-next {
+            opacity: 1;
+        }
+
+        .product-carousel .carousel-control-prev {
+            left: 15px;
+        }
+
+        .product-carousel .carousel-control-next {
+            right: 15px;
+        }
+
+        .product-carousel .carousel-control-prev:hover,
+        .product-carousel .carousel-control-next:hover {
+            background: rgba(238, 226, 232, 0.9);
+        }
+
+        .product-carousel .carousel-control-prev-icon,
+        .product-carousel .carousel-control-next-icon {
+            background-size: 60%;
+            filter: invert(1);
+        }
+
+        .hero-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .single-product-slide {
+                height: 300px;
+            }
+            
+            .slide-overlay {
+                transform: translateY(0);
+                background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+            }
+            
+            .slide-description {
+                font-size: 0.8rem;
+            }
+            
+            .product-carousel-container {
+                margin-top: 30px;
+                padding: 20px;
+            }
         }
     </style>
 
@@ -60,6 +232,59 @@
                         <a href="{{ url('/collections') }}" class="btn btn-outline-primary">View Collections</a>
                     </div>
                 </div>
+                
+                <!-- Product Carousel -->
+                <div class="col-lg-6">
+                    <div class="product-carousel-container">
+                        <div id="productCarousel" class="carousel slide product-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+                            <div class="carousel-inner">
+                                <!-- Slide 1 -->
+                                <div class="carousel-item active">
+                                    <div class="single-product-slide">
+                                        <img src="{{ asset('storage/carousel/young-japanese-woman-portrait-sitting-chair.jpg') }}" alt="Elegant Fashion" class="carousel-main-image">
+                                        <div class="slide-overlay">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="carousel-item">
+                                    <div class="single-product-slide">
+                                        <img src="{{ asset('storage/carousel/young-woman-wearing-colorful-winter-clothes.jpg') }}" alt="Winter Fashion" class="carousel-main-image">
+                                        <div class="slide-overlay">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 3 -->
+                                <div class="carousel-item">
+                                    <div class="single-product-slide">
+                                        <img src="{{ asset('storage/carousel/young-japanese-woman-portrait-with-copy-space.jpg') }}" alt="Classic Style" class="carousel-main-image">
+                                        <div class="slide-overlay">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carousel Indicators -->
+                            <div class="carousel-indicators custom-indicators">
+                                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            
+                            <!-- Controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -72,7 +297,7 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img src="{{ asset('images/product1.jpg') }}" class="card-img-top" alt="Product 1">
+                            <img src="{{ asset('storage\carousel\young-beautiful-smiling-female-trendy-summer-yellow-hipster-sweater-jeans.jpg') }}" class="card-img-top" alt="Product 1">
                             <div class="product-overlay">
                                 <a href="{{ url('/product/1') }}" class="btn btn-shop">Quick View</a>
                             </div>
@@ -92,7 +317,7 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img src="{{ asset('images/product2.jpg') }}" class="card-img-top" alt="Product 2">
+                            <img src="{{ asset('storage\carousel\young-beautiful-smiling-female-trendy-summer-yellow-hipster-sweater-jeans.jpg') }}" class="card-img-top" alt="Product 2">
                             <div class="product-overlay">
                                 <a href="{{ url('/product/2') }}" class="btn btn-shop">Quick View</a>
                             </div>
@@ -112,7 +337,7 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img src="{{ asset('images/product3.jpg') }}" class="card-img-top" alt="Product 3">
+                            <img src="{{ asset('storage\carousel\young-woman-wearing-colorful-winter-clothes.jpg') }}" class="card-img-top" alt="Product 3">
                             <div class="product-overlay">
                                 <a href="{{ url('/product/3') }}" class="btn btn-shop">Quick View</a>
                             </div>
@@ -131,7 +356,7 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card product-card h-100">
                         <div class="product-image">
-                            <img src="{{ asset('images/product4.jpg') }}" class="card-img-top" alt="Product 4">
+                            <img src="{{ asset('storage\carousel\young-japanese-woman-portrait-sitting-chair.jpg') }}" class="card-img-top" alt="Product 4">
                             <div class="product-overlay">
                                 <a href="{{ url('/product/4') }}" class="btn btn-shop">Quick View</a>
                             </div>
