@@ -61,11 +61,17 @@ class ProductController extends Controller
             ->take(12)
             ->get();
 
+        $featuredProducts = Product::whereNotNull('feature_id')
+            ->whereHas('feature')
+            ->with(['feature'])
+            ->take(5) // Limit to 5 featured products for sidebar
+            ->get();
+
         $categories = Category::all();
         $features = Feature::all();
 
 
-        return view('user.shop.category', compact('products', 'categories', 'categoryModel', 'features'));
+        return view('user.shop.category', compact('products', 'categories', 'categoryModel', 'features', 'featuredProducts'));
     }
 
     // New method for AJAX pagination

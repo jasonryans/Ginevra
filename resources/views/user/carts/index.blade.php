@@ -82,7 +82,7 @@
                                     {{ number_format($carts->sum(function ($cart) {return $cart->product->price * $cart->quantity;}),0,',','.') }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Shipping:</span>
+                                <span>Tax:</span>
                                 <span>Free</span>
                             </div>
                             <hr>

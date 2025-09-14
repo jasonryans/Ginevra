@@ -1,20 +1,64 @@
 @extends('user.base')
 
 @section('content')
+    <style>
+        .hero-background {
+            background-image: url('{{ asset('storage/logo/GINEVRA LOGO-02.png') }}');
+            background-size: fill;
+            background-repeat: no-repeat;
+            background-position: center center;
+            position: relative;
+            min-height: 550px;
+        }
+        
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Ensure text is readable over the logo */
+        .hero-title {
+            text-shadow: 2px 2px 4px rgba(5, 4, 4, 0.5);
+            color: #0e0d0d;
+        }
+
+        .hero-addition-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #d63384; /* Accent pink color */
+        }
+
+        .hero-subtitle {
+            text-shadow: 1px 1px 2px rgba(10, 4, 4, 0.5);
+            font-family: 'Playfair Display', serif;
+            font-weight: 100;
+            color: #d63384;
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+    </style>
+
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
+    <section class="hero-section hero-background">
+        <div class="container hero-content">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
-                    <h1 class="hero-title">Discover Your <span class="text-accent-pink">Style</span></h1>
-                    <p class="hero-subtitle">Explore our curated collection of contemporary fashion pieces designed to elevate your everyday wardrobe.</p>
+                    <h1 class="hero-title">Discover <span class="hero-addition-text"> Your </span><span class="text-accent-pink">Style</span></h1>
+                    <h4 class="hero-subtitle">Explore our curated collection of contemporary fashion pieces designed to elevate your everyday wardrobe.</h4>
                     <div class="d-flex gap-3">
                         <a href="{{ url('/shop') }}" class="btn btn-primary">Shop Now</a>
                         <a href="{{ url('/collections') }}" class="btn btn-outline-primary">View Collections</a>
                     </div>
-                </div>
-                <div class="col-lg-6 text-center">
-                    <img src="{{ asset('images/hero-image.jpg') }}" alt="Ginevra Hero" class="img-fluid hero-image" style="max-height: 500px; object-fit: cover;">
                 </div>
             </div>
         </div>

@@ -12,29 +12,302 @@
             </div>
         </div>
 
-        <div class="row" id="products-container">
-            @if ($products->count() > 0)
-                @include('user.shop.partials.product-grid', ['products' => $products])
-            @else
-                <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <h4>No products found in {{ $categoryModel->name }}</h4>
-                        <p>Check back later for new arrivals!</p>
-                        <a href="{{ route('user.home') }}" class="btn btn-primary">View All Products</a>
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                <div class="sidebar">
+                    <div class="sidebar-section">
+                        <h5 class="sidebar-title">Featured Products</h5>
+                        <div class="featured-products">
+                            @if(isset($featuredProducts) && $featuredProducts->count() > 0)
+                                @foreach($featuredProducts as $product)
+                                    <div class="featured-product-card">
+                                        <a href="{{ route('user.products.show', $product->id) }}" class="featured-product-link">
+                                            <div class="featured-product-image">
+                                                @if($product->foto_product)
+                                                    @php
+                                                        $photos = json_decode($product->foto_product, true);
+                                                    @endphp
+                                                    @if(is_array($photos) && count($photos) > 0)
+                                                        <img src="{{ Str::startsWith($photos[0], 'http') ? $photos[0] : asset('storage/' . $photos[0]) }}" 
+                                                            alt="{{ $product->name }}" class="featured-image-primary">
+                                                        @if(count($photos) > 1)
+                                                            <img src="{{ Str::startsWith($photos[1], 'http') ? $photos[1] : asset('storage/' . $photos[1]) }}" 
+                                                                alt="{{ $product->name }}" class="featured-image-hover">
+                                                        @endif
+                                                    @else
+                                                        <div class="no-image-placeholder">
+                                                            <span>No Image</span>
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <div class="no-image-placeholder">
+                                                        <span>No Image</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="featured-product-info">
+                                                <h6 class="featured-product-name">{{ Str::limit($product->name, 40) }}</h6>
+                                                <p class="featured-product-brand">{{ strtoupper(config('app.name', 'GINEVRA')) }}</p>
+                                                <!-- Rating stars -->
+                                                <div class="featured-product-rating">
+                                                    @php
+                                                        $rating = $product->average_rating ?? 4.5;
+                                                        $fullStars = floor($rating);
+                                                        $halfStar = ($rating - $fullStars) >= 0.5;
+                                                    @endphp
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $fullStars)
+                                                            <i class="fas fa-star"></i>
+                                                        @elseif($i == $fullStars + 1 && $halfStar)
+                                                            <i class="fas fa-star-half-alt"></i>
+                                                        @else
+                                                            <i class="far fa-star"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <div class="featured-product-price">
+                                                    <span class="current-price">IDR {{ number_format($product->price, 0, ',', '.') }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="no-featured-products">
+                                    <p class="text-muted">No featured products available</p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
 
-        <!-- Loading Animation -->
-        <div id="loading-animation" class="text-center my-4" style="display: none;">
-            <div class="loading-spinner">
-                <div class="custom-spinner"></div>
+            <!-- Main Content -->
+            <div class="col-lg-9 col-md-8">
+                <div class="row" id="products-container">
+                    @if ($products->count() > 0)
+                        @include('user.shop.partials.product-grid', ['products' => $products])
+                    @else
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                <h4>No products found in {{ $categoryModel->name }}</h4>
+                                <p>Check back later for new arrivals!</p>
+                                <a href="{{ route('user.home') }}" class="btn btn-primary">View All Products</a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Loading Animation -->
+                <div id="loading-animation" class="text-center my-4" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="custom-spinner"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <style>
+        /* Sidebar Styles */
+        .sidebar {
+            background: #fff;
+            padding: 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .featured-products {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .featured-product-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .featured-product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .featured-product-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .featured-product-link:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .featured-product-image {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .featured-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease-in-out, 0.4s ease-in-out;
+        }
+
+        .featured-product-image .featured-image-primary,
+        .featured-product-image .featured-image-hover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4 ease-in-out, opacity 0.4s ease-in-out;
+        }
+
+        .featured-product-image .featured-image-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        /* Hover effects for featured products */
+        .featured-product-card:hover .featured-image-primary {
+            opacity: 0;
+            transform: scale(1.05);
+        }
+
+        .featured-product-card:hover .featured-image-hover {
+            opacity: 1;
+            transform: scale(1.05);
+            /* transition: transform 0.4s ease-in-out; */
+        }
+
+        /* Enhanced hover effect for single image */
+        /* .featured-product-card:hover .featured-product-image img:not(.featured-image-hover) {
+            opacity: 1;
+            transform: scale(1.05);
+        } */
+
+        .featured-product-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+            transition: color 0.3s ease; /* Added transition */
+            position: relative; /* Added for underline effect */
+        }
+
+        /* Add underline animation like main products */
+        .featured-product-name::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #000000;
+            transition: width 0.3s ease;
+        }
+
+        .featured-product-card:hover .featured-product-name::after {
+            width: 100%;
+        }
+
+        .featured-product-card:hover .featured-product-name {
+            color: #000000;
+        }
+
+        .featured-product-card:hover .featured-product-image img {
+            transform: scale(1.05);
+        }
+
+        .featured-product-image .no-image-placeholder {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .featured-product-info {
+            padding: 1rem;
+        }
+
+        .featured-product-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .featured-product-brand {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            margin: 0;
+        }
+
+        .featured-product-rating {
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-product-rating i {
+            font-size: 12px;
+            color: #ffd700;
+            margin-right: 1px;
+        }
+
+        .featured-product-rating i.far {
+            color: #e0e0e0;
+        }
+
+        .featured-product-price {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .featured-product-price .current-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .featured-product-price .original-price {
+            font-size: 12px;
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .no-featured-products {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Existing styles... */
         .product-wrapper {
             display: flex;
             flex-direction: column;
@@ -58,7 +331,7 @@
         .product-image-container {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 400px;
             overflow: hidden;
             background-color: #f8f9fa;
         }
@@ -235,6 +508,23 @@
         .product-wrapper.fade-in:nth-child(12) { animation-delay: 1.2s; }
 
         /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                margin-bottom: 2rem;
+            }
+            
+            .featured-products {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                gap: 1rem;
+            }
+            
+            .featured-product-card {
+                flex: 0 0 200px;
+            }
+        }
+
         @media (max-width: 768px) {
             .product-image-container {
                 height: 400px;
@@ -247,11 +537,23 @@
             .price {
                 font-size: 15px;
             }
+            
+            .featured-product-card {
+                flex: 0 0 180px;
+            }
         }
 
         @media (max-width: 576px) {
             .product-image-container {
                 height: 320px;
+            }
+            
+            .featured-products {
+                flex-direction: column;
+            }
+            
+            .featured-product-card {
+                flex: 1 1 auto;
             }
         }
 

@@ -1,8 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="min-height: 120px">
     <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand font-playfair" href="{{ route('home') }}">
+        {{-- <a class="navbar-brand font-playfair" href="{{ route('home') }}">
             <strong>Ginevra</strong>
+        </a> --}}
+             <!-- Brand with Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+            <span class="font-playfair"><strong>Ginevra</strong></span>
+            <img src="{{ asset('storage/logo/No Background LOGO.png') }}" alt="Ginevra Logo" class="me-2" style="height: 100px; width: auto;">
         </a>
 
         <!-- Toggle button for mobile -->
